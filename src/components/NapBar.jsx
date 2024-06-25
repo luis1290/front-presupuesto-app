@@ -11,11 +11,13 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import {  useNavigate } from 'react-router-dom';
-import { useEffect,  useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 // import { getJobAplicationThunk } from '../store/slices/jobAplication.slice';
+import { getSpentsUserThunk } from '../store/slices/spentsUser.slice';
 import Link from '@mui/material/Link';
+import { deepOrange, deepPurple } from '@mui/material/colors';
 
 const NapBar = ({ nameUser, urlUser, themeGlobal }) => {
   const dispatch = useDispatch();
@@ -46,10 +48,10 @@ const NapBar = ({ nameUser, urlUser, themeGlobal }) => {
     setAnchorElUser(null);
   };
 
-  // useEffect(() => {
-  //   dispatch(getJobAplicationThunk(id));
+  useEffect(() => {
+    dispatch(getSpentsUserThunk(id));
 
-  // }, [themeGlobal]);
+  }, [themeGlobal]);
 
   function stringToColor(string) {
     let hash = 0;
@@ -75,13 +77,22 @@ const NapBar = ({ nameUser, urlUser, themeGlobal }) => {
   }
 
   function stringAvatar(name) {
+    console.log('entrada name', name)
     return {
       sx: {
         bgcolor: stringToColor(name),
       },
-      children: typeof name === 'string' ? `${name.split(' ')[0][0]}${name.split(' ')[1][0]}` : null
+      children: `${name.split(' ')[0][0]}${name.split(' ')[1][0]}`,
     };
   }
+
+  function getFirstName(name) {
+    if (typeof name === 'string' && name.length > 0) {
+        return name.charAt(0);
+    } else {
+        return null; 
+    }
+}
 
   return (
     <AppBar position="static">
@@ -119,27 +130,27 @@ const NapBar = ({ nameUser, urlUser, themeGlobal }) => {
               }}
             >
 
-              <MenuItem className='linkMenu'  onClick={handleCloseNavMenu}>
+              <MenuItem className='linkMenu' onClick={handleCloseNavMenu}>
                 <Typography textAlign="center">
-                  <Link  onClick={() => handleClick('/')} color="inherit" underline="none">
+                  <Link onClick={() => handleClick('/')} color="inherit" underline="none">
                     {'Inicio'}
                   </Link>
                 </Typography>
               </MenuItem>
-              {/* <MenuItem className='linkMenu' onClick={handleCloseNavMenu}>
+              { <MenuItem className='linkMenu' onClick={handleCloseNavMenu}>
                 <Typography textAlign="center">
                   <Link onClick={() => handleClick('/companies')} color="inherit" underline="none">
                     {'Empresas'}
                   </Link>
                 </Typography>
-              </MenuItem> */}
-              {/* <MenuItem className='linkMenu' onClick={handleCloseNavMenu}>
+              </MenuItem> }
+              { <MenuItem className='linkMenu' onClick={handleCloseNavMenu}>
                 <Typography textAlign="center">
                   <Link onClick={() => handleClick('/recluiters')} color="inherit" underline="none">
                     {'Reclutadores'}
                   </Link>
                 </Typography>
-              </MenuItem> */}
+              </MenuItem> }
             </Menu>
           </Box>
 
@@ -157,7 +168,7 @@ const NapBar = ({ nameUser, urlUser, themeGlobal }) => {
                 </Typography>
               </Link>
             </Box>
-            {/* <Box sx={{
+            { <Box sx={{
               marginRight: '10px',
               '&:hover': {
                 backgroundColor: 'inherit',
@@ -166,12 +177,12 @@ const NapBar = ({ nameUser, urlUser, themeGlobal }) => {
             }}>
               <Link onClick={() => handleClick('/companies')} className='linkMenu' underline="none" color="inherit">
                 <Typography textAlign="center" sx={{ my: 2, color: 'white', display: 'block' }} >
-                  Empresas
+                  Gastos
                 </Typography>
               </Link>
-            </Box> */}
+            </Box> }
 
-            {/* <Box sx={{
+            { <Box sx={{
               marginRight: '10px',
               '&:hover': {
                 backgroundColor: 'inherit',
@@ -180,16 +191,17 @@ const NapBar = ({ nameUser, urlUser, themeGlobal }) => {
             }}>
               <Link onClick={() => handleClick('/recluiters')} className='linkMenu' underline="none" color="inherit">
                 <Typography textAlign="center" sx={{ my: 2, color: 'white', display: 'block' }} >
-                  Reclutadores
+                  Ingresos
                 </Typography>
               </Link>
-            </Box> */}
+            </Box> }
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar {...stringAvatar(nameUser)} />
+                {console.log('primera entrada', nameUser)}
+                <Avatar sx={{ bgcolor: deepOrange[500] }}>{getFirstName(nameUser)}</Avatar>
               </IconButton>
             </Tooltip>
             <Menu

@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
-import logo from './logo.svg';
+// import logo from './logo.svg';
 import './App.css';
-import RegisterUser from './components/loguin/RegisterUser'
+// import RegisterUser from './components/loguin/RegisterUser'
 import { Box, IconButton, Toolbar, Typography, createTheme } from '@mui/material'
 import LoguinForm from './components/loguin/SignInSide'
 import LoguinPage from './pages/LoguinPage'

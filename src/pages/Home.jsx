@@ -16,7 +16,7 @@ import { useEffect, useState } from 'react';
 // import ModalCreatAplication from '../components/ModalCreatAplication';
 import NapBar from '../components/NapBar';
 import { useDispatch, useSelector } from 'react-redux';
-// import { getJobAplicationThunk } from '../store/slices/jobAplication.slice';
+import { getSpentsUserThunk } from '../store/slices/spentsUser.slice';
 // import DetailtAplication from '../components/DetailtAplication';
 import axios from 'axios';
 import Swal from 'sweetalert2';
@@ -27,7 +27,7 @@ import { useNavigate } from 'react-router';
 
 const Home = ({ themeGlobal }) => {
   const dispatch = useDispatch();
-  const jobAplication = useSelector((state) => state.jobAplication);
+  const spentsUser = useSelector((state) => state.spentsUser);
   const [open, setOpen] = useState(false);
 
 
@@ -45,20 +45,60 @@ const Home = ({ themeGlobal }) => {
 
 
 
-  // useEffect(() => {
-  //   dispatch(getJobAplicationThunk(id));
-  //   setAbatar(jobAplication?.url_avatar)
-  //   setName(jobAplication?.name)
+  useEffect(() => {
+    dispatch(getSpentsUserThunk(id));
+    setAbatar(spentsUser?.url_avatar)
+    setName(spentsUser?.name)
 
-  // }, [jobAplication?.url_avatar, jobAplication?.name, id, dispatch]);
+  }, [spentsUser?.url_avatar, spentsUser?.name, id, dispatch]);
+
+  function converDate(fechaISO) {
+    try {
+      // Crear un objeto Date a partir de la cadena ISO 8601
+      let fecha = new Date(fechaISO);
+
+      // Obtener partes individuales de la fecha
+      let dia = fecha.getDate();
+      let mes = fecha.getMonth() + 1; // Los meses son indexados desde 0
+      let anio = fecha.getFullYear();
+      let horas = fecha.getHours();
+      let minutos = fecha.getMinutes();
+      let segundos = fecha.getSeconds();
+
+      // Determinar AM o PM y ajustar las horas al formato de 12 horas
+      let ampm = horas >= 12 ? 'PM' : 'AM';
+      horas = horas % 12;
+      horas = horas ? horas : 12; // La hora '0' debe ser '12'
+
+      // Formatear las partes para que tengan siempre dos dígitos
+      dia = dia < 10 ? '0' + dia : dia;
+      mes = mes < 10 ? '0' + mes : mes;
+      horas = horas < 10 ? '0' + horas : horas;
+      minutos = minutos < 10 ? '0' + minutos : minutos;
+      segundos = segundos < 10 ? '0' + segundos : segundos;
+
+      // Formatear la fecha en el formato deseado
+      return `${dia}/${mes}/${anio} ${horas}:${minutos}:${ampm}`;
+    } catch (error) {
+      console.error("Formato de fecha inválido:", error);
+      return null;
+    }
+  }
+
+  function formatCurrency(amount) {
+    return amount.toLocaleString('es-CR', {
+      style: 'currency',
+      currency: 'CRC',
+    });
+  }
 
 
   return (
     <ThemeProvider theme={themeGlobal}>
       <CssBaseline />
 
-
-      <NapBar nameUser={jobAplication?.name} urlUser={avatar} themeGlobal={themeGlobal} />
+      {console.log('name', spentsUser?.name)}
+      <NapBar nameUser={spentsUser?.name} urlUser={avatar} themeGlobal={themeGlobal} />
 
       <main>
         {/* Hero unit */}
@@ -77,7 +117,7 @@ const Home = ({ themeGlobal }) => {
               color="text.primary"
               gutterBottom
             >
-              Aplicaciones de trabajo
+              Gastos
             </Typography>
 
             <Stack
@@ -98,7 +138,7 @@ const Home = ({ themeGlobal }) => {
         <Container sx={{ py: 8 }} maxWidth="md">
           {/* End hero unit */}
           <Grid container spacing={4}>
-            {jobAplication?.aplicatio_jobs?.map((apl) => (
+            {spentsUser?.spents?.map((apl) => (
               <Grid item key={apl?.id} xs={12} sm={6} md={4}>
                 <Card
                   sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
@@ -112,12 +152,15 @@ const Home = ({ themeGlobal }) => {
                     </Typography>
                   </CardMedia>
                   <CardContent sx={{ flexGrow: 1 }}>
-                    <Typography textAlign="center">
+                    <Typography textAlign="center" gutterBottom variant="h5">
+                      {formatCurrency(apl.amount)}
+                    </Typography>
+                    <Typography textAlign="center" variant="h5">
                       {apl.description}
                     </Typography>
-                    {apl?.interviews?.map((int) => (
-                      <Typography key={int?.date_interview} textAlign="center">Fecha Entrevista: {int?.date_interview}</Typography>
-                    ))}
+                    <Typography textAlign="center" key={apl?.id} gutterBottom variant="h5" component="h2">
+                      {converDate(apl?.createdAt)}
+                    </Typography>
                   </CardContent>
                   <CardActions >
                     {/* <DetailtAplication key={apl?.company?.id} themeGlobal={themeGlobal} company={apl?.company?.name} email={apl?.company?.email} location={apl?.company?.location} interviews={apl?.interviews} /> */}
