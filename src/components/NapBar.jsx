@@ -14,7 +14,6 @@ import MenuItem from '@mui/material/MenuItem';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-// import { getJobAplicationThunk } from '../store/slices/jobAplication.slice';
 import { getSpentsUserThunk } from '../store/slices/spentsUser.slice';
 import Link from '@mui/material/Link';
 import { deepOrange, deepPurple } from '@mui/material/colors';
@@ -140,14 +139,14 @@ const NapBar = ({ nameUser, urlUser, themeGlobal }) => {
               { <MenuItem className='linkMenu' onClick={handleCloseNavMenu}>
                 <Typography textAlign="center">
                   <Link onClick={() => handleClick('/companies')} color="inherit" underline="none">
-                    {'Empresas'}
+                    {'Gastos'}
                   </Link>
                 </Typography>
               </MenuItem> }
               { <MenuItem className='linkMenu' onClick={handleCloseNavMenu}>
                 <Typography textAlign="center">
-                  <Link onClick={() => handleClick('/recluiters')} color="inherit" underline="none">
-                    {'Reclutadores'}
+                  <Link onClick={() => handleClick('/incomes')} color="inherit" underline="none">
+                    {'Ingresos'}
                   </Link>
                 </Typography>
               </MenuItem> }

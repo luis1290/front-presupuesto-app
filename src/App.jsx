@@ -14,6 +14,7 @@ import ProtectedRoutes from './components/ProtectedRoutes'
 import Loader from './components/Loader'
 import { useSelector } from 'react-redux'
 import Index from './pages/Index'
+import Incomes from './pages/Incomes'
 
 
 import Brightness4Icon from '@mui/icons-material/Brightness4';
@@ -71,8 +72,8 @@ function App() {
 
           <Route element={<ProtectedRoutes />}>
             <Route path='/' element={<Home themeGlobal={themeGlobal} />} />
-            {/* <Route path='/recluiters' element={<Recluiters themeGlobal={themeGlobal} />} />
-            <Route path='/companies' element={<Companies themeGlobal={themeGlobal} />} /> */}
+            <Route path='/incomes' element={<Incomes themeGlobal={themeGlobal} />} />
+            {/* <Route path='/companies' element={<Companies themeGlobal={themeGlobal} />} /> */}
           </Route>
         </Routes>
       </HashRouter>

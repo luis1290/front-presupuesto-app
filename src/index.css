@@ -1,13 +1,130 @@
-body {
+* {
+  box-sizing: border-box;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  padding: 0;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+.App {
+  display: grid;
+}
+
+.cardRegistrer {
+  padding: 15px;
+  align-items: end;
+}
+
+.BoxRegistrer {
+  padding: 50px;
+}
+
+.StackRegistrer {
+  gap: 20px;
+}
+
+/* nabar */
+
+.linkMenu {
+  text-decoration: none;
+  color: black;
+  padding: 15px;
+  cursor: pointer;
+}
+
+Link:hover {
+  color: orange;
+}
+
+.linkMenuDark {
+  text-decoration: none;
+  color: white;
+  padding: 15px;
+}
+
+.linkIcon {
+  text-decoration: none;
+  color: white;
+  padding: 15px;
+}
+
+.textArea {
+  width: 220px;
+  font-family: IBM Plex Sans, sans-serif;
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1.5;
+  padding: 12px;
+  border-radius: 12px;
+
+}
+
+/* CSS LOADER */
+.lds-hourglass {
+  display: inline-block;
+  width: 100%;
+  height: 100vh;
+  background-color: rgba(80, 89, 90, 0.645);
+  backdrop-filter: blur(10px);
+  position: fixed;
+  z-index: 2000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.lds-hourglass:after {
+  content: " ";
+  display: block;
+  border-radius: 50%;
+  width: 0;
+  height: 0;
+  margin: 8px;
+  box-sizing: border-box;
+  border: 32px solid #eda820;
+  border-color: #eda820 transparent #eda820 transparent;
+  animation: lds-hourglass 1.2s infinite;
+}
+
+@keyframes lds-hourglass {
+  0% {
+    transform: rotate(0);
+    animation-timing-function: cubic-bezier(0.55, 0.055, 0.675, 0.19);
+  }
+
+  50% {
+    transform: rotate(900deg);
+    animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+  }
+
+  100% {
+    transform: rotate(1800deg);
+  }
+}
+
+
+/* estilos de modal de detalles */
+
+
+.DetailModal {
+  position: absolute;
+  border-radius: 15px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 500;
+  background-color: antiquewhite;
+  border: 2px solid #000;
+  box-shadow: 24;
+  padding: 15px;
+}
+
+.modalCreate {
+  position: absolute;
+  border-radius: 15px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 500;
+  border: 2px solid #000;
+  box-shadow: 24;
+  padding: 15px;
 }

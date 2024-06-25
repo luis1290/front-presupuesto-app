@@ -17,6 +17,7 @@ import { useEffect, useState } from 'react';
 import NapBar from '../components/NapBar';
 import { useDispatch, useSelector } from 'react-redux';
 import { getSpentsUserThunk } from '../store/slices/spentsUser.slice';
+import { getSpentsTotalThunk } from '../store/slices/totalSpent.slice';
 // import DetailtAplication from '../components/DetailtAplication';
 import axios from 'axios';
 import Swal from 'sweetalert2';
@@ -28,12 +29,14 @@ import { useNavigate } from 'react-router';
 const Home = ({ themeGlobal }) => {
   const dispatch = useDispatch();
   const spentsUser = useSelector((state) => state.spentsUser);
+  const totalSpents = useSelector((state) => state.totalSpents);
   const [open, setOpen] = useState(false);
 
 
   const id = localStorage.getItem("id")
   const [avatar, setAbatar] = useState('')
   const [name, setName] = useState('')
+  const [totalSpent, setTotalSpent] = useState('')
 
   const navigate = useNavigate()
 
@@ -47,8 +50,10 @@ const Home = ({ themeGlobal }) => {
 
   useEffect(() => {
     dispatch(getSpentsUserThunk(id));
+    dispatch(getSpentsTotalThunk(id));
     setAbatar(spentsUser?.url_avatar)
     setName(spentsUser?.name)
+    setTotalSpent(totalSpents)
 
   }, [spentsUser?.url_avatar, spentsUser?.name, id, dispatch]);
 
@@ -63,7 +68,7 @@ const Home = ({ themeGlobal }) => {
       let anio = fecha.getFullYear();
       let horas = fecha.getHours();
       let minutos = fecha.getMinutes();
-      let segundos = fecha.getSeconds();
+
 
       // Determinar AM o PM y ajustar las horas al formato de 12 horas
       let ampm = horas >= 12 ? 'PM' : 'AM';
@@ -75,10 +80,10 @@ const Home = ({ themeGlobal }) => {
       mes = mes < 10 ? '0' + mes : mes;
       horas = horas < 10 ? '0' + horas : horas;
       minutos = minutos < 10 ? '0' + minutos : minutos;
-      segundos = segundos < 10 ? '0' + segundos : segundos;
+
 
       // Formatear la fecha en el formato deseado
-      return `${dia}/${mes}/${anio} ${horas}:${minutos}:${ampm}`;
+      return `${dia}/${mes}/${anio} ${horas}:${minutos} ${ampm}`;
     } catch (error) {
       console.error("Formato de fecha inválido:", error);
       return null;
@@ -86,10 +91,16 @@ const Home = ({ themeGlobal }) => {
   }
 
   function formatCurrency(amount) {
-    return amount.toLocaleString('es-CR', {
-      style: 'currency',
-      currency: 'CRC',
-    });
+    if (amount !== undefined) {
+      return amount.toLocaleString('es-CR', {
+        style: 'currency',
+        currency: 'CRC',
+      });
+    } else {
+      console.error('Value is undefined');
+      return 'Invalid value';
+    }
+
   }
 
 
@@ -117,7 +128,7 @@ const Home = ({ themeGlobal }) => {
               color="text.primary"
               gutterBottom
             >
-              Gastos
+              Total Gastos: {formatCurrency(totalSpents.totalSpent)}
             </Typography>
 
             <Stack
@@ -147,7 +158,7 @@ const Home = ({ themeGlobal }) => {
                   <CardMedia
                     component="div"
                   >
-                    <Typography textAlign="center" key={apl?.id} gutterBottom variant="h5" component="h2">
+                    <Typography textAlign="center" key={apl?.id} gutterBottom variant="h3" component="h3">
                       {apl?.name}
                     </Typography>
                   </CardMedia>
@@ -158,7 +169,7 @@ const Home = ({ themeGlobal }) => {
                     <Typography textAlign="center" variant="h5">
                       {apl.description}
                     </Typography>
-                    <Typography textAlign="center" key={apl?.id} gutterBottom variant="h5" component="h2">
+                    <Typography textAlign="center" key={apl?.id} gutterBottom variant="h6" component="h6">
                       {converDate(apl?.createdAt)}
                     </Typography>
                   </CardContent>
