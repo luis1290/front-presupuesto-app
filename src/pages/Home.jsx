@@ -23,6 +23,7 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 import getConfig from '../helpers/getConfig';
 import { useNavigate } from 'react-router';
+import ModalCreatSpent from '../components/ModalCreatSpent';
 
 
 
@@ -137,11 +138,11 @@ const Home = ({ themeGlobal }) => {
               spacing={2}
               justifyContent="center"
             >
-              {/* <Box xs={12} sm={6} md={4}>
+              { <Box xs={12} sm={6} md={4}>
                 <Grid>
-                  <ModalCreatAplication themeGlobal={themeGlobal} />
+                  <ModalCreatSpent themeGlobal={themeGlobal} />
                 </Grid>
-              </Box> */}
+              </Box> }
 
             </Stack>
           </Container>

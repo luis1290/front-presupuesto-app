@@ -16,6 +16,7 @@ import NapBar from '../components/NapBar';
 import { useDispatch, useSelector } from 'react-redux';
 import { getSpentsUserThunk } from '../store/slices/spentsUser.slice';
 import { getIncomeUserThunk } from '../store/slices/incomeUser.slice';
+import { getIncomeBalanceUserThunk } from '../store/slices/incomeBalance.slice';
 // import ModalCreateRecluter from '../components/ModalCreateRecluter';
 // import DetailRecluter from '../components/DetailRecluter';
 import Swal from 'sweetalert2';
@@ -31,6 +32,10 @@ const Incomes = ({ themeGlobal }) => {
 
     const income = useSelector((state) => state?.incomeUser);
 
+    const balance = useSelector((state) => state?.incomeBalance)
+
+    // const [incomeBalance, setIncomeBalance] = useState('')
+
 
 
     const id = localStorage.getItem("id")
@@ -41,7 +46,9 @@ const Incomes = ({ themeGlobal }) => {
     useEffect(() => {
         setAbatar(spentsUser.url_avatar)
         dispatch(getIncomeUserThunk(id))
+        dispatch(getIncomeBalanceUserThunk(id))
         dispatch(getSpentsUserThunk(id));
+      
     }, []);
 
     function formatCurrency(amount) {
@@ -108,7 +115,7 @@ const Incomes = ({ themeGlobal }) => {
                             color="text.primary"
                             gutterBottom
                         >
-                            Ingresos
+                            Balance:{ formatCurrency(balance.balanceIncome)}
                         </Typography>
 
                         <Stack
@@ -124,8 +131,8 @@ const Incomes = ({ themeGlobal }) => {
                 <Container sx={{ py: 8 }} maxWidth="md">
                     {/* End hero unit */}
                     <Grid container spacing={4}>
-                        {Array.isArray(income) ? income?.map((reclu) => (
-                            <Grid item key={reclu?.id} xs={12} sm={6} md={4}>
+                        {Array.isArray(income) ? income?.map((ico) => (
+                            <Grid item key={ico?.id} xs={12} sm={6} md={4}>
                                 <Card
                                     sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
                                     elevation={4}
@@ -133,16 +140,16 @@ const Incomes = ({ themeGlobal }) => {
                                     <CardMedia
                                         component="div"
                                     >
-                                        <Typography textAlign="center" key={reclu?.id} gutterBottom variant="h5" component="h2">
-                                            {reclu?.name}
+                                        <Typography textAlign="center" key={ico?.id} gutterBottom variant="h5" component="h2">
+                                            {ico?.name}
                                         </Typography>
                                     </CardMedia>
                                     <CardContent sx={{ flexGrow: 1 }}>
                                         <Typography textAlign="center">
-                                            Descripcion: {reclu?.description}
+                                            Descripcion: {ico?.description}
                                         </Typography>
                                         <Typography textAlign="center">
-                                            monto: {formatCurrency(reclu?.amount)}
+                                            monto: {formatCurrency(ico?.amount)}
                                         </Typography>
                                     </CardContent>
                                     <CardActions>

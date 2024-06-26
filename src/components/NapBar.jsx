@@ -87,11 +87,11 @@ const NapBar = ({ nameUser, urlUser, themeGlobal }) => {
 
   function getFirstName(name) {
     if (typeof name === 'string' && name.length > 0) {
-        return name.charAt(0);
+      return name.charAt(0);
     } else {
-        return null; 
+      return null;
     }
-}
+  }
 
   return (
     <AppBar position="static">
@@ -129,32 +129,26 @@ const NapBar = ({ nameUser, urlUser, themeGlobal }) => {
               }}
             >
 
-              <MenuItem className='linkMenu' onClick={handleCloseNavMenu}>
+              {<MenuItem className='linkMenu' onClick={handleCloseNavMenu}>
                 <Typography textAlign="center">
                   <Link onClick={() => handleClick('/')} color="inherit" underline="none">
-                    {'Inicio'}
-                  </Link>
-                </Typography>
-              </MenuItem>
-              { <MenuItem className='linkMenu' onClick={handleCloseNavMenu}>
-                <Typography textAlign="center">
-                  <Link onClick={() => handleClick('/companies')} color="inherit" underline="none">
                     {'Gastos'}
                   </Link>
                 </Typography>
-              </MenuItem> }
-              { <MenuItem className='linkMenu' onClick={handleCloseNavMenu}>
+              </MenuItem>}
+              {<MenuItem className='linkMenu' onClick={handleCloseNavMenu}>
                 <Typography textAlign="center">
                   <Link onClick={() => handleClick('/incomes')} color="inherit" underline="none">
                     {'Ingresos'}
                   </Link>
                 </Typography>
-              </MenuItem> }
+              </MenuItem>}
             </Menu>
           </Box>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            <Box sx={{
+
+            {<Box sx={{
               marginRight: '10px',
               '&:hover': {
                 backgroundColor: 'inherit',
@@ -163,37 +157,24 @@ const NapBar = ({ nameUser, urlUser, themeGlobal }) => {
             }}>
               <Link onClick={() => handleClick('/')} className='linkMenu' underline="none" color="inherit">
                 <Typography textAlign="center" sx={{ my: 2, color: 'white', display: 'block' }} >
-                  Inicio
-                </Typography>
-              </Link>
-            </Box>
-            { <Box sx={{
-              marginRight: '10px',
-              '&:hover': {
-                backgroundColor: 'inherit',
-                opacity: [0.9, 0.8, 0.7],
-              },
-            }}>
-              <Link onClick={() => handleClick('/companies')} className='linkMenu' underline="none" color="inherit">
-                <Typography textAlign="center" sx={{ my: 2, color: 'white', display: 'block' }} >
                   Gastos
                 </Typography>
               </Link>
-            </Box> }
+            </Box>}
 
-            { <Box sx={{
+            {<Box sx={{
               marginRight: '10px',
               '&:hover': {
                 backgroundColor: 'inherit',
                 opacity: [0.9, 0.8, 0.7],
               },
             }}>
-              <Link onClick={() => handleClick('/recluiters')} className='linkMenu' underline="none" color="inherit">
+              <Link onClick={() => handleClick('/incomes')} className='linkMenu' underline="none" color="inherit">
                 <Typography textAlign="center" sx={{ my: 2, color: 'white', display: 'block' }} >
                   Ingresos
                 </Typography>
               </Link>
-            </Box> }
+            </Box>}
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
