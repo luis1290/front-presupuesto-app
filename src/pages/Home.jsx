@@ -49,7 +49,7 @@ const Home = ({ themeGlobal }) => {
   // Calcula el índice inicial y final de los elementos que se mostrarán en la página actual
   const startIndex = (page - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const currentItems = spentsUser?.spents?.slice(startIndex, endIndex);
+  const currentItems = Array.isArray(spentsUser?.spents) ? spentsUser?.spents.slice(startIndex, endIndex) : [];
 
   const navigate = useNavigate()
 
@@ -166,7 +166,7 @@ const Home = ({ themeGlobal }) => {
         <Container sx={{ py: 8 }} maxWidth="md">
           {/* End hero unit */}
           <Grid container spacing={4}>
-            {spentsUser?.spents?.map((apl) => (
+            {currentItems?.map((apl) => (
               <Grid item key={apl?.id} xs={12} sm={6} md={4}>
                 <Card
                   sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
