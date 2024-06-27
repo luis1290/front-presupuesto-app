@@ -19,6 +19,8 @@ import ModalCreatCategoryIncome from '../components/ModalCreateCategoryIncome';
 import Swal from 'sweetalert2';
 import axios from 'axios';
 import PaginationComponent from '../components/PaginationComponent';
+import DetailCategoryIncome from '../components/DetailtCategoryIncome';
+import ModalEditCategoryIncome from '../components/ModalEditCategoryIncome';
 
 
 
@@ -29,6 +31,10 @@ const CategoryIncomes = ({ themeGlobal }) => {
     const spentsUser = useSelector((state) => state.spentsUser);
     const id = localStorage.getItem("id")
     const [avatar, setAbatar] = useState('')
+
+    // Estado para el modal de edición
+    const [editModalOpen, setEditModalOpen] = useState(false);
+    const [selectedCategory, setSelectedCategory] = useState(null);
 
     // paginacion
     const itemsPerPage = 6; // Define la cantidad de elementos por página
@@ -75,6 +81,16 @@ const CategoryIncomes = ({ themeGlobal }) => {
             }
         })
     }
+
+    const openEditModal = (category) => {
+        setSelectedCategory(category);
+        setEditModalOpen(true);
+    };
+
+    const closeEditModal = () => {
+        setSelectedCategory(null);
+        setEditModalOpen(false);
+    };
 
     return (
         <ThemeProvider theme={themeGlobal}>
@@ -134,8 +150,8 @@ const CategoryIncomes = ({ themeGlobal }) => {
                                         </Typography>
                                     </CardContent>
                                     <CardActions>
-                                        {/* <DetailRecluter key={reclu?.id} company={reclu?.company} name={reclu?.name} /> */}
-                                        <Button size="small">Editar</Button>
+                                        <DetailCategoryIncome key={cateIcom?.id} name={cateIcom?.name} description={cateIcom?.description} />
+                                        <Button onClick={() => openEditModal(cateIcom)} size="small">Editar</Button>
                                         <Button onClick={() => deletCategoryIncome(cateIcom?.id)} size="small">Eliminar</Button>
                                     </CardActions>
                                 </Card>
@@ -150,6 +166,13 @@ const CategoryIncomes = ({ themeGlobal }) => {
                     />
                 </Container>
             </main>
+
+            <ModalEditCategoryIncome
+                themeGlobal={themeGlobal}
+                open={editModalOpen}
+                handleClose={closeEditModal}
+                category={selectedCategory}
+            />
         </ThemeProvider>
     );
 };
