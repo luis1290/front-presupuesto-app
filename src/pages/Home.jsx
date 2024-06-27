@@ -24,6 +24,8 @@ import Swal from 'sweetalert2';
 import getConfig from '../helpers/getConfig';
 import { useNavigate } from 'react-router';
 import ModalCreatSpent from '../components/ModalCreatSpent';
+import { Pagination } from '@mui/material';
+import PaginationComponent from '../components/PaginationComponent';
 
 
 
@@ -38,6 +40,16 @@ const Home = ({ themeGlobal }) => {
   const [avatar, setAbatar] = useState('')
   const [name, setName] = useState('')
   const [totalSpent, setTotalSpent] = useState('')
+
+
+  //paginacion
+  const itemsPerPage = 6; // Define la cantidad de elementos por página
+  const [page, setPage] = useState(1);
+
+  // Calcula el índice inicial y final de los elementos que se mostrarán en la página actual
+  const startIndex = (page - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentItems = spentsUser?.spents?.slice(startIndex, endIndex);
 
   const navigate = useNavigate()
 
@@ -104,6 +116,10 @@ const Home = ({ themeGlobal }) => {
 
   }
 
+  const handleChangePage = (event, value) => {
+    setPage(value);
+  };
+
 
   return (
     <ThemeProvider theme={themeGlobal}>
@@ -138,11 +154,11 @@ const Home = ({ themeGlobal }) => {
               spacing={2}
               justifyContent="center"
             >
-              { <Box xs={12} sm={6} md={4}>
+              {<Box xs={12} sm={6} md={4}>
                 <Grid>
                   <ModalCreatSpent themeGlobal={themeGlobal} />
                 </Grid>
-              </Box> }
+              </Box>}
 
             </Stack>
           </Container>
@@ -168,7 +184,10 @@ const Home = ({ themeGlobal }) => {
                       {formatCurrency(apl.amount)}
                     </Typography>
                     <Typography textAlign="center" variant="h5">
-                      {apl.description}
+                      Descripcion:  {apl.description}
+                    </Typography>
+                    <Typography textAlign="center" variant="h5">
+                      Categoria: {apl?.categorySpent?.name}
                     </Typography>
                     <Typography textAlign="center" key={apl?.id} gutterBottom variant="h6" component="h6">
                       {converDate(apl?.createdAt)}
@@ -183,6 +202,12 @@ const Home = ({ themeGlobal }) => {
               </Grid>
             ))}
           </Grid>
+          <PaginationComponent
+            totalItems={spentsUser?.spents?.length}
+            itemsPerPage={itemsPerPage}
+            currentPage={page}
+            onPageChange={handleChangePage}
+          />
         </Container>
       </main>
       {/* Footer */}

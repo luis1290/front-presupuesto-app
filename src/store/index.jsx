@@ -5,9 +5,10 @@ import spentsUser from './slices/spentsUser.slice'
 import incomeUser from './slices/incomeUser.slice'
 import totalSpents from './slices/totalSpent.slice'
 import incomeBalance from './slices/incomeBalance.slice'
+import categoryIncome from './slices/categoryIncome.slice'
 
 export default configureStore({
   reducer: {
-    isLoading, dark, spentsUser, totalSpents, incomeUser, incomeBalance
+    isLoading, dark, spentsUser, totalSpents, incomeUser, incomeBalance, categoryIncome
   }
 })

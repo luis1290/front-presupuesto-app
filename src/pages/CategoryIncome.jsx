@@ -16,7 +16,9 @@ import NapBar from '../components/NapBar';
 import { useDispatch, useSelector } from 'react-redux';
 import { getSpentsUserThunk } from '../store/slices/spentsUser.slice';
 import { getIncomeUserThunk } from '../store/slices/incomeUser.slice';
-import { getIncomeBalanceUserThunk } from '../store/slices/incomeBalance.slice';
+// import { getIncomeBalanceUserThunk } from '../store/slices/incomeBalance.slice';
+
+import { getCategoryIncomeThunk } from '../store/slices/categoryIncome.slice';
 // import ModalCreateRecluter from '../components/ModalCreateRecluter';
 // import DetailRecluter from '../components/DetailRecluter';
 import Swal from 'sweetalert2';
@@ -25,15 +27,14 @@ import PaginationComponent from '../components/PaginationComponent';
 
 
 
-const Incomes = ({ themeGlobal }) => {
+const CategoryIncomes = ({ themeGlobal }) => {
 
     const dispatch = useDispatch();
     //   const jobAplication = useSelector((state) => state?.jobAplication);
+    const categoryIncome = useSelector((state) => state.categoryIncome);
     const spentsUser = useSelector((state) => state.spentsUser);
 
-    const income = useSelector((state) => state?.incomeUser);
-
-    const balance = useSelector((state) => state?.incomeBalance)
+ 
 
     // const [incomeBalance, setIncomeBalance] = useState('')
 
@@ -59,8 +60,7 @@ const Incomes = ({ themeGlobal }) => {
 
     useEffect(() => {
         setAbatar(spentsUser.url_avatar)
-        dispatch(getIncomeUserThunk(id))
-        dispatch(getIncomeBalanceUserThunk(id))
+        dispatch(getCategoryIncomeThunk())
         dispatch(getSpentsUserThunk(id));
 
     }, []);
@@ -129,7 +129,7 @@ const Incomes = ({ themeGlobal }) => {
                             color="text.primary"
                             gutterBottom
                         >
-                            Balance:{formatCurrency(balance.balanceIncome)}
+                            Categoria de Ingresos
                         </Typography>
 
                         <Stack
@@ -145,8 +145,8 @@ const Incomes = ({ themeGlobal }) => {
                 <Container sx={{ py: 8 }} maxWidth="md">
                     {/* End hero unit */}
                     <Grid container spacing={4}>
-                        {Array.isArray(income) ? income?.map((ico) => (
-                            <Grid item key={ico?.id} xs={12} sm={6} md={4}>
+                        {Array.isArray(categoryIncome) ? categoryIncome?.map((cateIcom) => (
+                            <Grid item key={cateIcom?.id} xs={12} sm={6} md={4}>
                                 <Card
                                     sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
                                     elevation={4}
@@ -154,16 +154,13 @@ const Incomes = ({ themeGlobal }) => {
                                     <CardMedia
                                         component="div"
                                     >
-                                        <Typography textAlign="center" key={ico?.id} gutterBottom variant="h5" component="h2">
-                                            {ico?.name}
+                                        <Typography textAlign="center" key={cateIcom?.id} gutterBottom variant="h5" component="h2">
+                                            {cateIcom?.name}
                                         </Typography>
                                     </CardMedia>
                                     <CardContent sx={{ flexGrow: 1 }}>
                                         <Typography textAlign="center">
-                                            Descripcion: {ico?.description}
-                                        </Typography>
-                                        <Typography textAlign="center">
-                                            monto: {formatCurrency(ico?.amount)}
+                                            Descripcion: {cateIcom?.description}
                                         </Typography>
                                     </CardContent>
                                     <CardActions>
@@ -187,4 +184,4 @@ const Incomes = ({ themeGlobal }) => {
     );
 };
 
-export default Incomes;
+export default CategoryIncomes;

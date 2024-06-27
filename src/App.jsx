@@ -19,6 +19,7 @@ import Incomes from './pages/Incomes'
 
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
+import CategoryIncomes from './pages/CategoryIncome';
 
 
 
@@ -73,6 +74,7 @@ function App() {
           <Route element={<ProtectedRoutes />}>
             <Route path='/' element={<Home themeGlobal={themeGlobal} />} />
             <Route path='/incomes' element={<Incomes themeGlobal={themeGlobal} />} />
+            <Route path='/categoryincome' element={<CategoryIncomes themeGlobal={themeGlobal} />} />
             {/* <Route path='/companies' element={<Companies themeGlobal={themeGlobal} />} /> */}
           </Route>
         </Routes>
