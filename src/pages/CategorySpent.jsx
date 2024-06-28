@@ -20,7 +20,7 @@ import Swal from 'sweetalert2';
 import axios from 'axios';
 import PaginationComponent from '../components/PaginationComponent';
 import DetailCategoryIncome from '../components/DetailtCategoryIncome';
-import ModalEditCategoryIncome from '../components/ModalEditCategoryIncome';
+import ModalEditCategorySpent from '../components/ModalEditCategorySpent';
 import { InputAdornment, TextField } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import ModalCreatCategorySpent from '../components/ModalCreateCategorySpent';
@@ -187,7 +187,7 @@ const CategorySpent = ({ themeGlobal }) => {
                                     </CardContent>
                                     <CardActions>
                                         <DetailCategorySpent key={cateSpe?.id} name={cateSpe?.name} description={cateSpe?.description} />
-                                        {/* <Button onClick={() => openEditModal(cateSpe)} size="small">Editar</Button> */}
+                                        <Button onClick={() => openEditModal(cateSpe)} size="small">Editar</Button>
                                         <Button onClick={() => deletCategorySpent(cateSpe?.id)} size="small">Eliminar</Button>
                                     </CardActions>
                                 </Card>
@@ -203,7 +203,7 @@ const CategorySpent = ({ themeGlobal }) => {
                 </Container>
             </main>
 
-            <ModalEditCategoryIncome
+            <ModalEditCategorySpent
                 themeGlobal={themeGlobal}
                 open={editModalOpen}
                 handleClose={closeEditModal}
