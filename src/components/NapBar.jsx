@@ -150,6 +150,13 @@ const NapBar = ({ nameUser, urlUser, themeGlobal }) => {
                   </Link>
                 </Typography>
               </MenuItem>}
+              {<MenuItem className='linkMenu' onClick={handleCloseNavMenu}>
+                <Typography textAlign="center">
+                  <Link onClick={() => handleClick('/categoryspent')} color="inherit" underline="none">
+                    {'Categoria Gasto'}
+                  </Link>
+                </Typography>
+              </MenuItem>}
             </Menu>
           </Box>
 
@@ -193,6 +200,19 @@ const NapBar = ({ nameUser, urlUser, themeGlobal }) => {
               <Link onClick={() => handleClick('/categoryincome')} className='linkMenu' underline="none" color="inherit">
                 <Typography textAlign="center" sx={{ my: 2, color: 'white', display: 'block' }} >
                   Categoria Ingresos
+                </Typography>
+              </Link>
+            </Box>}
+            {<Box sx={{
+              marginRight: '10px',
+              '&:hover': {
+                backgroundColor: 'inherit',
+                opacity: [0.9, 0.8, 0.7],
+              },
+            }}>
+              <Link onClick={() => handleClick('/categoryspent')} className='linkMenu' underline="none" color="inherit">
+                <Typography textAlign="center" sx={{ my: 2, color: 'white', display: 'block' }} >
+                  Categoria Gasto
                 </Typography>
               </Link>
             </Box>}

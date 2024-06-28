@@ -25,7 +25,7 @@ const ModalCreatCategoryIncome = ({ themeGlobal }) => {
     };
     return (
         <div className='modalCreateCategoryIncome'>
-            <Button onClick={handleOpen} variant="contained">Agregar Gasto</Button>
+            <Button onClick={handleOpen} variant="contained">Agregar Categoria Ingreso</Button>
             <Modal
                 open={open}
                 onClose={handleOpen}

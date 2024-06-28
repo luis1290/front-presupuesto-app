@@ -14,7 +14,7 @@ import { useEffect, useState } from 'react';
 import NapBar from '../components/NapBar';
 import { useDispatch, useSelector } from 'react-redux';
 import { getSpentsUserThunk } from '../store/slices/spentsUser.slice';
-import { getCategoryIncomeThunk } from '../store/slices/categoryIncome.slice';
+import { getCategorySpentThunk } from '../store/slices/categorySpent.slice';
 import ModalCreatCategoryIncome from '../components/ModalCreateCategoryIncome';
 import Swal from 'sweetalert2';
 import axios from 'axios';
@@ -26,10 +26,10 @@ import SearchIcon from '@mui/icons-material/Search';
 
 
 
-const CategoryIncomes = ({ themeGlobal }) => {
+const CategorySpent = ({ themeGlobal }) => {
 
     const dispatch = useDispatch();
-    const categoryIncome = useSelector((state) => state.categoryIncome);
+    const categorySpent = useSelector((state) => state.categorySpent);
     const spentsUser = useSelector((state) => state.spentsUser);
     const id = localStorage.getItem("id")
     const [avatar, setAbatar] = useState('')
@@ -47,7 +47,7 @@ const CategoryIncomes = ({ themeGlobal }) => {
     const [page, setPage] = useState(1);
 
     // Filtra las categorías de ingreso según el término de búsqueda
-    const filteredItems = Array.isArray(categoryIncome) ? categoryIncome.filter((item) =>
+    const filteredItems = Array.isArray(categorySpent) ? categorySpent.filter((item) =>
         item.name.toLowerCase().includes(searchTerm.toLowerCase())
     ) : [];
 
@@ -62,12 +62,12 @@ const CategoryIncomes = ({ themeGlobal }) => {
 
     useEffect(() => {
         setAbatar(spentsUser.url_avatar)
-        dispatch(getCategoryIncomeThunk())
+        dispatch(getCategorySpentThunk())
         dispatch(getSpentsUserThunk(id));
 
     }, []);
 
-    const deletCategoryIncome = (id) => {
+    const deletCategorySpent = (id) => {
         Swal.fire({
             title: '¿Deseas eliminar este dato?',
             showDenyButton: true,
@@ -77,18 +77,18 @@ const CategoryIncomes = ({ themeGlobal }) => {
         }).then((result) => {
             /* Read more about isConfirmed, isDenied below */
             if (result.isConfirmed) {
-                axios.delete(`http://localhost:8000/delitecategoryincome/${id}`)
+                axios.delete(`http://localhost:8000/delitecategoryspent/${id}`)
                     .then((res) => {
-                        dispatch(getCategoryIncomeThunk())
-                        Swal.fire('categoria ingreso eliminada con exito')
+                        dispatch(getCategorySpentThunk())
+                        Swal.fire('categoria gasto eliminada con exito')
                     })
                     .catch((error) => {
-                        Swal.fire('Error al eliminar la categoria ingreso', error.response.data.message)
+                        Swal.fire('Error al eliminar la categoria gasto', error.response.data.message)
                         console.error(error)
                     });
                 Swal.fire('!Eliminado!', '', 'correctamente')
             } else if (result.isDenied) {
-                Swal.fire('categoria ingreso no eliminada', '', 'info')
+                Swal.fire('categoria gasto no eliminada', '', 'info')
             }
         })
     }
@@ -131,7 +131,7 @@ const CategoryIncomes = ({ themeGlobal }) => {
                             color="text.primary"
                             gutterBottom
                         >
-                            Categoria de Ingresos
+                            Categoria de Gastos
                         </Typography>
 
                         <Stack
@@ -140,7 +140,7 @@ const CategoryIncomes = ({ themeGlobal }) => {
                             spacing={2}
                             justifyContent="center"
                         >
-                            <ModalCreatCategoryIncome themeGlobal={themeGlobal} />
+                            {/* <ModalCreatCategoryIncome themeGlobal={themeGlobal} /> */}
                         </Stack>
                         {/* TextField y Button para la búsqueda */}
                         <Box sx={{ pt: 4 }} display="flex" justifyContent="center">
@@ -165,8 +165,8 @@ const CategoryIncomes = ({ themeGlobal }) => {
                 <Container sx={{ py: 8 }} maxWidth="md">
                     {/* End hero unit */}
                     <Grid container spacing={4}>
-                        {Array.isArray(currentItems) ? currentItems?.map((cateIcom) => (
-                            <Grid item key={cateIcom?.id} xs={12} sm={6} md={4}>
+                        {Array.isArray(currentItems) ? currentItems?.map((cateSpe) => (
+                            <Grid item key={cateSpe?.id} xs={12} sm={6} md={4}>
                                 <Card
                                     sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
                                     elevation={4}
@@ -174,26 +174,26 @@ const CategoryIncomes = ({ themeGlobal }) => {
                                     <CardMedia
                                         component="div"
                                     >
-                                        <Typography textAlign="center" key={cateIcom?.id} gutterBottom variant="h5" component="h2">
-                                            {cateIcom?.name}
+                                        <Typography textAlign="center" key={cateSpe?.id} gutterBottom variant="h5" component="h2">
+                                            {cateSpe?.name}
                                         </Typography>
                                     </CardMedia>
                                     <CardContent sx={{ flexGrow: 1 }}>
                                         <Typography textAlign="center">
-                                            Descripcion: {cateIcom?.description}
+                                            Descripcion: {cateSpe?.description}
                                         </Typography>
                                     </CardContent>
                                     <CardActions>
-                                        <DetailCategoryIncome key={cateIcom?.id} name={cateIcom?.name} description={cateIcom?.description} />
-                                        <Button onClick={() => openEditModal(cateIcom)} size="small">Editar</Button>
-                                        <Button onClick={() => deletCategoryIncome(cateIcom?.id)} size="small">Eliminar</Button>
+                                        <DetailCategoryIncome key={cateSpe?.id} name={cateSpe?.name} description={cateSpe?.description} />
+                                        {/* <Button onClick={() => openEditModal(cateSpe)} size="small">Editar</Button> */}
+                                        <Button onClick={() => deletCategorySpent(cateSpe?.id)} size="small">Eliminar</Button>
                                     </CardActions>
                                 </Card>
                             </Grid>
                         )) : null}
                     </Grid>
                     <PaginationComponent
-                        totalItems={categoryIncome?.length}
+                        totalItems={categorySpent?.length}
                         itemsPerPage={itemsPerPage}
                         currentPage={page}
                         onPageChange={handleChangePage}
@@ -211,4 +211,4 @@ const CategoryIncomes = ({ themeGlobal }) => {
     );
 };
 
-export default CategoryIncomes;
+export default CategorySpent;
