@@ -23,6 +23,8 @@ import DetailCategoryIncome from '../components/DetailtCategoryIncome';
 import ModalEditCategoryIncome from '../components/ModalEditCategoryIncome';
 import { InputAdornment, TextField } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
+import ModalCreatCategorySpent from '../components/ModalCreateCategorySpent';
+import DetailCategorySpent from '../components/DetailtCategorySpent';
 
 
 
@@ -140,7 +142,7 @@ const CategorySpent = ({ themeGlobal }) => {
                             spacing={2}
                             justifyContent="center"
                         >
-                            {/* <ModalCreatCategoryIncome themeGlobal={themeGlobal} /> */}
+                            <ModalCreatCategorySpent themeGlobal={themeGlobal} />
                         </Stack>
                         {/* TextField y Button para la búsqueda */}
                         <Box sx={{ pt: 4 }} display="flex" justifyContent="center">
@@ -184,7 +186,7 @@ const CategorySpent = ({ themeGlobal }) => {
                                         </Typography>
                                     </CardContent>
                                     <CardActions>
-                                        <DetailCategoryIncome key={cateSpe?.id} name={cateSpe?.name} description={cateSpe?.description} />
+                                        <DetailCategorySpent key={cateSpe?.id} name={cateSpe?.name} description={cateSpe?.description} />
                                         {/* <Button onClick={() => openEditModal(cateSpe)} size="small">Editar</Button> */}
                                         <Button onClick={() => deletCategorySpent(cateSpe?.id)} size="small">Eliminar</Button>
                                     </CardActions>
