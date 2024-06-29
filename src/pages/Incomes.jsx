@@ -17,45 +17,49 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getSpentsUserThunk } from '../store/slices/spentsUser.slice';
 import { getIncomeUserThunk } from '../store/slices/incomeUser.slice';
 import { getIncomeBalanceUserThunk } from '../store/slices/incomeBalance.slice';
-// import ModalCreateRecluter from '../components/ModalCreateRecluter';
-// import DetailRecluter from '../components/DetailRecluter';
 import Swal from 'sweetalert2';
 import axios from 'axios';
 import PaginationComponent from '../components/PaginationComponent';
+import ModalCreatIncome from '../components/ModalCreateIncome';
+import { InputAdornment, TextField } from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
 
 
 
 const Incomes = ({ themeGlobal }) => {
 
     const dispatch = useDispatch();
-    //   const jobAplication = useSelector((state) => state?.jobAplication);
     const spentsUser = useSelector((state) => state.spentsUser);
-
     const income = useSelector((state) => state?.incomeUser);
-
     const balance = useSelector((state) => state?.incomeBalance)
 
     // const [incomeBalance, setIncomeBalance] = useState('')
-
-
-
     const id = localStorage.getItem("id")
 
 
     const [avatar, setAbatar] = useState('')
 
+    // Estado para el término de búsqueda
+    const [searchTerm, setSearchTerm] = useState('');
+    const [searchQuery, setSearchQuery] = useState('');
+
     // paginacion
     const itemsPerPage = 6; // Define la cantidad de elementos por página
     const [page, setPage] = useState(1);
 
+    // Filtra las categorías de ingreso según el término de búsqueda
+    const filteredItems = Array.isArray(income) ? income.filter((item) =>
+        item.name.toLowerCase().includes(searchTerm.toLowerCase())
+    ) : [];
+
     // Calcula el índice inicial y final de los elementos que se mostrarán en la página actual
     const startIndex = (page - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
-    const currentItems = spentsUser?.spents?.slice(startIndex, endIndex);
-    
+    const currentItems = filteredItems.slice(startIndex, endIndex);
+
     const handleChangePage = (event, value) => {
         setPage(value);
-      };
+    };
 
     useEffect(() => {
         setAbatar(spentsUser.url_avatar)
@@ -104,7 +108,10 @@ const Incomes = ({ themeGlobal }) => {
     //     })
     // }
 
+    const handleSearch = () => {
+        setSearchQuery(searchTerm);
 
+    };
 
     return (
         <ThemeProvider theme={themeGlobal}>
@@ -138,14 +145,31 @@ const Incomes = ({ themeGlobal }) => {
                             spacing={2}
                             justifyContent="center"
                         >
-                            {/* <ModalCreateRecluter themeGlobal={themeGlobal} /> */}
+                            <ModalCreatIncome themeGlobal={themeGlobal} />
                         </Stack>
+                        <Box sx={{ pt: 4 }} display="flex" justifyContent="center">
+                            <TextField
+                                variant="outlined"
+                                label="Buscar"
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                InputProps={{
+                                    endAdornment: (
+                                        <InputAdornment position="end">
+                                            <Button onClick={handleSearch}>
+                                                <SearchIcon />
+                                            </Button>
+                                        </InputAdornment>
+                                    )
+                                }}
+                            />
+                        </Box>
                     </Container>
                 </Box>
                 <Container sx={{ py: 8 }} maxWidth="md">
                     {/* End hero unit */}
                     <Grid container spacing={4}>
-                        {Array.isArray(income) ? income?.map((ico) => (
+                        {Array.isArray(currentItems) ? currentItems?.map((ico) => (
                             <Grid item key={ico?.id} xs={12} sm={6} md={4}>
                                 <Card
                                     sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
@@ -176,7 +200,7 @@ const Incomes = ({ themeGlobal }) => {
                         )) : null}
                     </Grid>
                     <PaginationComponent
-                        totalItems={spentsUser?.spents?.length}
+                        totalItems={income?.length}
                         itemsPerPage={itemsPerPage}
                         currentPage={page}
                         onPageChange={handleChangePage}
