@@ -9,8 +9,7 @@ import Stack from '@mui/material/Stack';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import Link from '@mui/material/Link';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { ThemeProvider } from '@mui/material/styles';
 import { useEffect, useState } from 'react';
 import NapBar from '../components/NapBar';
 import { useDispatch, useSelector } from 'react-redux';
@@ -23,6 +22,7 @@ import PaginationComponent from '../components/PaginationComponent';
 import ModalCreatIncome from '../components/ModalCreateIncome';
 import { InputAdornment, TextField } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
+import getConfig from '../helpers/getConfig';
 
 
 
@@ -67,7 +67,7 @@ const Incomes = ({ themeGlobal }) => {
         dispatch(getIncomeBalanceUserThunk(id))
         dispatch(getSpentsUserThunk(id));
 
-    }, []);
+    }, [dispatch, id, spentsUser.url_avatar]);
 
     function formatCurrency(amount) {
         if (amount !== undefined) {
@@ -82,36 +82,65 @@ const Incomes = ({ themeGlobal }) => {
 
     }
 
-    // const deletRecluter = (id) => {
-    //     Swal.fire({
-    //         title: '¿Deseas eliminar este dato?',
-    //         showDenyButton: true,
-    //         showCancelButton: false,
-    //         confirmButtonText: 'Eliminar',
-    //         denyButtonText: `No Eliminado`,
-    //     }).then((result) => {
-    //         /* Read more about isConfirmed, isDenied below */
-    //         if (result.isConfirmed) {
-    //             axios.delete(`http://localhost:8000/deliterecruiter/${id}`)
-    //                 .then((res) => {
-    //                     dispatch(getRecluitersThunk())
-    //                     Swal.fire('Reclutador eliminada con exito')
-    //                 })
-    //                 .catch((error) => {
-    //                     Swal.fire('Error al eliminar el Reclutador', error.response.data.message)
-    //                     console.error(error)
-    //                 });
-    //             Swal.fire('!Eliminado!', '', 'correctamente')
-    //         } else if (result.isDenied) {
-    //             Swal.fire('Reclutador no eliminada', '', 'info')
-    //         }
-    //     })
-    // }
+    const deletIcome = (idIncome) => {
+        Swal.fire({
+            title: '¿Deseas eliminar este dato?',
+            showDenyButton: true,
+            showCancelButton: false,
+            confirmButtonText: 'Eliminar',
+            denyButtonText: `No Eliminado`,
+        }).then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+                axios.delete(`http://localhost:8000/deliteincome/${idIncome}`, getConfig())
+                    .then((res) => {
+                        dispatch(getIncomeUserThunk(id))
+                        dispatch(getSpentsUserThunk(id));
+                        Swal.fire('Ingreso eliminada con exito')
+                    })
+                    .catch((error) => {
+                        Swal.fire('Error al eliminar el Ingreso', error.response.data.message)
+                        console.error(error)
+                    });
+                Swal.fire('!Eliminado!', '', 'correctamente')
+            } else if (result.isDenied) {
+                Swal.fire('Ingreso no eliminada', '', 'info')
+            }
+        })
+    }
 
     const handleSearch = () => {
         setSearchQuery(searchTerm);
 
     };
+    function converDate(fechaISO) {
+        try {
+            // Crear un objeto Date a partir de la cadena ISO 8601
+            let fecha = new Date(fechaISO);
+
+            // Obtener partes individuales de la fecha
+            let dia = fecha.getDate();
+            let mes = fecha.getMonth() + 1; // Los meses son indexados desde 0
+            let anio = fecha.getFullYear();
+            let horas = fecha.getHours();
+            let minutos = fecha.getMinutes();
+
+            // Determinar AM o PM y ajustar las horas al formato de 12 horas
+            let ampm = horas >= 12 ? 'PM' : 'AM';
+            horas = horas % 12;
+            horas = horas ? horas : 12; // La hora '0' debe ser '12'
+            // Formatear las partes para que tengan siempre dos dígitos
+            dia = dia < 10 ? '0' + dia : dia;
+            mes = mes < 10 ? '0' + mes : mes;
+            horas = horas < 10 ? '0' + horas : horas;
+            minutos = minutos < 10 ? '0' + minutos : minutos;
+            // Formatear la fecha en el formato deseado
+            return `${dia}/${mes}/${anio} ${horas}:${minutos} ${ampm}`;
+        } catch (error) {
+            console.error("Formato de fecha inválido:", error);
+            return null;
+        }
+    }
 
     return (
         <ThemeProvider theme={themeGlobal}>
@@ -189,11 +218,14 @@ const Incomes = ({ themeGlobal }) => {
                                         <Typography textAlign="center">
                                             monto: {formatCurrency(ico?.amount)}
                                         </Typography>
+                                        <Typography textAlign="center" key={ico?.id} gutterBottom variant="h6" component="h6">
+                                            {converDate(ico?.createdAt)}
+                                        </Typography>
                                     </CardContent>
                                     <CardActions>
                                         {/* <DetailRecluter key={reclu?.id} company={reclu?.company} name={reclu?.name} /> */}
                                         <Button size="small">Editar</Button>
-                                        {/* <Button onClick={() => deletRecluter(reclu?.id)} size="small">Eliminar</Button> */}
+                                        <Button onClick={() => deletIcome(ico?.id)} size="small">Eliminar</Button>
                                     </CardActions>
                                 </Card>
                             </Grid>

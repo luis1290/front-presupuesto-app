@@ -9,7 +9,7 @@ import Stack from '@mui/material/Stack';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { ThemeProvider } from '@mui/material/styles';
 import { useEffect, useState } from 'react';
 import NapBar from '../components/NapBar';
 import { useDispatch, useSelector } from 'react-redux';
@@ -65,7 +65,7 @@ const CategoryIncomes = ({ themeGlobal }) => {
         dispatch(getCategoryIncomeThunk())
         dispatch(getSpentsUserThunk(id));
 
-    }, []);
+    }, [dispatch, id, spentsUser.url_avatar]);
 
     const deletCategoryIncome = (id) => {
         Swal.fire({
