@@ -10,12 +10,13 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { ThemeProvider } from '@mui/material/styles';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import NapBar from '../components/NapBar';
 import { useDispatch, useSelector } from 'react-redux';
 import { getSpentsUserThunk } from '../store/slices/spentsUser.slice';
 import { getIncomeUserThunk } from '../store/slices/incomeUser.slice';
 import { getIncomeBalanceUserThunk } from '../store/slices/incomeBalance.slice';
+import { getCategoryIncomeThunk } from '../store/slices/categoryIncome.slice';
 import Swal from 'sweetalert2';
 import axios from 'axios';
 import PaginationComponent from '../components/PaginationComponent';
@@ -23,6 +24,9 @@ import ModalCreatIncome from '../components/ModalCreateIncome';
 import { InputAdornment, TextField } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import getConfig from '../helpers/getConfig';
+import ModalEditIncome from '../components/ModalEditIncome';
+// Importa Chart.js
+import Chart from 'chart.js/auto';
 
 
 
@@ -30,8 +34,13 @@ const Incomes = ({ themeGlobal }) => {
 
     const dispatch = useDispatch();
     const spentsUser = useSelector((state) => state.spentsUser);
+    const categoryIncome = useSelector((state) => state.categoryIncome);
     const income = useSelector((state) => state?.incomeUser);
     const balance = useSelector((state) => state?.incomeBalance)
+
+    // Estado para el modal de edición
+    const [editModalOpen, setEditModalOpen] = useState(false);
+    const [selectedIncome, setSelectedIncome] = useState(null);
 
     // const [incomeBalance, setIncomeBalance] = useState('')
     const id = localStorage.getItem("id")
@@ -61,13 +70,73 @@ const Incomes = ({ themeGlobal }) => {
         setPage(value);
     };
 
+    // Referencia para el gráfico
+    const chartRef = useRef(null);
+
     useEffect(() => {
         setAbatar(spentsUser.url_avatar)
         dispatch(getIncomeUserThunk(id))
+        dispatch(getCategoryIncomeThunk())
         dispatch(getIncomeBalanceUserThunk(id))
         dispatch(getSpentsUserThunk(id));
 
+        // Generar gráfico al cargar los ingresos
+        generateChart();
+
     }, [dispatch, id, spentsUser.url_avatar]);
+
+    // Función para generar el gráfico de ingresos por categoría
+    const generateChart = () => {
+        const ctx = document.getElementById('incomeChart');
+        if (ctx) {
+            // Destruir el gráfico anterior si existe
+            if (chartRef.current) {
+                chartRef.current.destroy();
+            }
+
+            const categories = {};
+            income.forEach(income => {
+                const category = income.categoryIncome.name;
+                if (categories[category]) {
+                    categories[category] += income.amount;
+                } else {
+                    categories[category] = income.amount;
+                }
+            });
+
+            // Crear un nuevo gráfico y almacenar la referencia
+            chartRef.current = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(categories),
+                    datasets: [{
+                        label: 'Ingresos por categoría',
+                        data: Object.values(categories),
+                        backgroundColor: themeGlobal.palette.primary.main,
+                        borderColor: themeGlobal.palette.primary.dark,
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function (value) {
+                                    return formatCurrency(value);
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+        }
+    };
 
     function formatCurrency(amount) {
         if (amount !== undefined) {
@@ -142,6 +211,16 @@ const Incomes = ({ themeGlobal }) => {
         }
     }
 
+    const openEditModal = (income) => {
+        setSelectedIncome(income);
+        setEditModalOpen(true);
+    };
+
+    const closeEditModal = () => {
+        setSelectedIncome(null);
+        setEditModalOpen(false);
+    };
+
     return (
         <ThemeProvider theme={themeGlobal}>
             <CssBaseline />
@@ -213,6 +292,9 @@ const Incomes = ({ themeGlobal }) => {
                                     </CardMedia>
                                     <CardContent sx={{ flexGrow: 1 }}>
                                         <Typography textAlign="center">
+                                            Categoria: {ico?.categoryIncome?.name}
+                                        </Typography>
+                                        <Typography textAlign="center">
                                             Descripcion: {ico?.description}
                                         </Typography>
                                         <Typography textAlign="center">
@@ -224,21 +306,43 @@ const Incomes = ({ themeGlobal }) => {
                                     </CardContent>
                                     <CardActions>
                                         {/* <DetailRecluter key={reclu?.id} company={reclu?.company} name={reclu?.name} /> */}
-                                        <Button size="small">Editar</Button>
+                                        <Button onClick={() => openEditModal(ico)} size="small">Editar</Button>
                                         <Button onClick={() => deletIcome(ico?.id)} size="small">Eliminar</Button>
                                     </CardActions>
                                 </Card>
                             </Grid>
                         )) : null}
                     </Grid>
+
                     <PaginationComponent
                         totalItems={income?.length}
                         itemsPerPage={itemsPerPage}
                         currentPage={page}
                         onPageChange={handleChangePage}
                     />
+
+                </Container>
+                <Container sx={{ py: 8 }} maxWidth="md">
+                    <Grid item xs={12}>
+                        <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }} elevation={4}>
+                            <CardContent sx={{ flexGrow: 1 }}>
+                                <Typography variant="h6" component="h6" gutterBottom>
+                                    Distribución de ingresos por categoría
+                                </Typography>
+                                <canvas id="incomeChart" width="400" height="200"></canvas>
+                            </CardContent>
+                        </Card>
+                    </Grid>
                 </Container>
             </main>
+
+
+            <ModalEditIncome
+                themeGlobal={themeGlobal}
+                open={editModalOpen}
+                handleClose={closeEditModal}
+                income={selectedIncome}
+            />
         </ThemeProvider>
     );
 };

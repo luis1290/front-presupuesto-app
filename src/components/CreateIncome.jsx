@@ -149,6 +149,7 @@ const CreateIncome = ({ themeGlobal, setOpen }) => {
                                     value={formValues.category_id}
                                     label="Age"
                                     onChange={handleChange}
+                                    sx={{ mt: 3, mb: 2, minWidth: 200 }}
                                 >
                                     {Array.isArray(categoryIncome) ? categoryIncome?.map((cateIncome) => (
                                         <MenuItem id="selectCategoryIncome" key={cateIncome?.id} value={cateIncome?.id}>{cateIncome?.name}</MenuItem>
