@@ -6,7 +6,7 @@ import { setIsLoading } from './isLoading.slice';
 // Cambiamos mySlice por el nombre de nuestro slice (usersSlice, toDosSlice...)
 export const incomesUserSlice = createSlice({
   name: 'incomeUser',
-  initialState: {},
+  initialState: [],
   reducers: {
     setIncomeUserSlice: (state, action) => {
       return action.payload

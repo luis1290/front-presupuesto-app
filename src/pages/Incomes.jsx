@@ -21,7 +21,7 @@ import Swal from 'sweetalert2';
 import axios from 'axios';
 import PaginationComponent from '../components/PaginationComponent';
 import ModalCreatIncome from '../components/ModalCreateIncome';
-import { InputAdornment, TextField } from '@mui/material';
+import { InputAdornment, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import getConfig from '../helpers/getConfig';
 import ModalEditIncome from '../components/ModalEditIncome';
@@ -85,6 +85,14 @@ const Incomes = ({ themeGlobal }) => {
 
     }, [dispatch, id, spentsUser.url_avatar]);
 
+    useEffect(() => {
+        if (Array.isArray(income)) {
+            generateChart();
+        } else {
+            console.error("income is not an array", income);
+        }
+    }, [income]);
+
     // Función para generar el gráfico de ingresos por categoría
     const generateChart = () => {
         const ctx = document.getElementById('incomeChart');
@@ -94,47 +102,51 @@ const Incomes = ({ themeGlobal }) => {
                 chartRef.current.destroy();
             }
 
-            const categories = {};
-            income.forEach(income => {
-                const category = income.categoryIncome.name;
-                if (categories[category]) {
-                    categories[category] += income.amount;
-                } else {
-                    categories[category] = income.amount;
-                }
-            });
+            if (Array.isArray(income)) {
+                const categories = {};
+                income.forEach(income => {
+                    const category = income.categoryIncome.name;
+                    if (categories[category]) {
+                        categories[category] += income.amount;
+                    } else {
+                        categories[category] = income.amount;
+                    }
+                });
 
-            // Crear un nuevo gráfico y almacenar la referencia
-            chartRef.current = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: Object.keys(categories),
-                    datasets: [{
-                        label: 'Ingresos por categoría',
-                        data: Object.values(categories),
-                        backgroundColor: themeGlobal.palette.primary.main,
-                        borderColor: themeGlobal.palette.primary.dark,
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                callback: function (value) {
-                                    return formatCurrency(value);
+                // Crear un nuevo gráfico y almacenar la referencia
+                chartRef.current = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: Object.keys(categories),
+                        datasets: [{
+                            label: 'Ingresos por categoría',
+                            data: Object.values(categories),
+                            backgroundColor: themeGlobal.palette.primary.main,
+                            borderColor: themeGlobal.palette.primary.dark,
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: function (value) {
+                                        return formatCurrency(value);
+                                    }
                                 }
                             }
-                        }
-                    },
-                    plugins: {
-                        legend: {
-                            display: false
+                        },
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
                         }
                     }
-                }
-            });
+                });
+            } else {
+                console.error("income is not an array");
+            }
         }
     };
 
@@ -276,43 +288,36 @@ const Incomes = ({ themeGlobal }) => {
                 </Box>
                 <Container sx={{ py: 8 }} maxWidth="md">
                     {/* End hero unit */}
-                    <Grid container spacing={4}>
-                        {Array.isArray(currentItems) ? currentItems?.map((ico) => (
-                            <Grid item key={ico?.id} xs={12} sm={6} md={4}>
-                                <Card
-                                    sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
-                                    elevation={4}
-                                >
-                                    <CardMedia
-                                        component="div"
-                                    >
-                                        <Typography textAlign="center" key={ico?.id} gutterBottom variant="h5" component="h2">
-                                            {ico?.name}
-                                        </Typography>
-                                    </CardMedia>
-                                    <CardContent sx={{ flexGrow: 1 }}>
-                                        <Typography textAlign="center">
-                                            Categoria: {ico?.categoryIncome?.name}
-                                        </Typography>
-                                        <Typography textAlign="center">
-                                            Descripcion: {ico?.description}
-                                        </Typography>
-                                        <Typography textAlign="center">
-                                            monto: {formatCurrency(ico?.amount)}
-                                        </Typography>
-                                        <Typography textAlign="center" key={ico?.id} gutterBottom variant="h6" component="h6">
-                                            {converDate(ico?.createdAt)}
-                                        </Typography>
-                                    </CardContent>
-                                    <CardActions>
-                                        {/* <DetailRecluter key={reclu?.id} company={reclu?.company} name={reclu?.name} /> */}
-                                        <Button onClick={() => openEditModal(ico)} size="small">Editar</Button>
-                                        <Button onClick={() => deletIcome(ico?.id)} size="small">Eliminar</Button>
-                                    </CardActions>
-                                </Card>
-                            </Grid>
-                        )) : null}
-                    </Grid>
+
+                    <TableContainer component={Paper}>
+                        <Table>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell sx={{ fontWeight: 'bold', backgroundColor: 'GrayText' }}>Nombre</TableCell>
+                                    <TableCell sx={{ fontWeight: 'bold', backgroundColor: 'GrayText' }}>Categoría</TableCell>
+                                    <TableCell sx={{ fontWeight: 'bold', backgroundColor: 'GrayText' }}>Descripción</TableCell>
+                                    <TableCell sx={{ fontWeight: 'bold', backgroundColor: 'GrayText' }}>Monto</TableCell>
+                                    <TableCell sx={{ fontWeight: 'bold', backgroundColor: 'GrayText' }}>Fecha</TableCell>
+                                    <TableCell sx={{ fontWeight: 'bold', backgroundColor: 'GrayText' }}>Acciones</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {Array.isArray(currentItems) && currentItems.map((ico) => (
+                                    <TableRow key={ico?.id}>
+                                        <TableCell>{ico?.name}</TableCell>
+                                        <TableCell>{ico?.categoryIncome?.name}</TableCell>
+                                        <TableCell>{ico?.description}</TableCell>
+                                        <TableCell>{formatCurrency(ico?.amount)}</TableCell>
+                                        <TableCell>{converDate(ico?.createdAt)}</TableCell>
+                                        <TableCell>
+                                            <Button onClick={() => openEditModal(ico)} size="small">Editar</Button>
+                                            <Button onClick={() => deletIcome(ico?.id)} size="small">Eliminar</Button>
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
 
                     <PaginationComponent
                         totalItems={income?.length}
