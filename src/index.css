@@ -26,13 +26,25 @@
 .linkMenu {
   text-decoration: none;
   color: black;
-  padding: 15px;
+  padding: 0px;
+  margin: 15px;
   cursor: pointer;
+  background-color: #f9f9f9; /* Fondo claro */
+  transition: background-color 0.3s, color 0.3s, box-shadow 0.3s; 
 }
 
-Link:hover {
-  color: orange;
+.linkMenu:hover {
+  background-color: #111;
+  color: #d6dce4;
+  /* color: #007bff;
+  /* Color del texto al pasar el cursor */
+  /* background-color: #e6f7ff; */
+  /* Fondo al pasar el cursor 
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  Sombra */
 }
+
+
 
 .linkMenuDark {
   text-decoration: none;

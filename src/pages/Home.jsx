@@ -13,12 +13,10 @@ import Container from '@mui/material/Container';
 import Link from '@mui/material/Link';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useEffect, useRef, useState } from 'react';
-// import ModalCreatAplication from '../components/ModalCreatAplication';
 import NapBar from '../components/NapBar';
 import { useDispatch, useSelector } from 'react-redux';
 import { getSpentsUserThunk } from '../store/slices/spentsUser.slice';
 import { getSpentsTotalThunk } from '../store/slices/totalSpent.slice';
-// import DetailtAplication from '../components/DetailtAplication';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import getConfig from '../helpers/getConfig';
@@ -30,6 +28,7 @@ import SearchIcon from '@mui/icons-material/Search';
 
 // Importa Chart.js
 import Chart from 'chart.js/auto';
+import ModalEditSpent from '../components/ModalEditSpent';
 
 
 
@@ -38,6 +37,10 @@ const Home = ({ themeGlobal }) => {
   const spentsUser = useSelector((state) => state.spentsUser);
   const totalSpents = useSelector((state) => state.totalSpents);
   const [open, setOpen] = useState(false);
+
+  // Estado para el modal de edición
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [selectedSpent, setSelectedSpent] = useState(null);
 
 
   const id = localStorage.getItem("id")
@@ -78,13 +81,20 @@ const Home = ({ themeGlobal }) => {
   useEffect(() => {
     dispatch(getSpentsUserThunk(id));
     dispatch(getSpentsTotalThunk(id));
-    setArraySpents(spentsUser?.spents)
-    setAbatar(spentsUser?.url_avatar)
-    setName(spentsUser?.name)
-    setTotalSpent(totalSpents)
 
-      // Generar gráfico al cargar los ingresos
-      generateChart();
+
+
+    if (spentsUser) {
+      setArraySpents(spentsUser.spents);
+      setAbatar(spentsUser.url_avatar);
+      setName(spentsUser.name);
+    }
+    // setAbatar(spentsUser?.url_avatar)
+    // setName(spentsUser?.name)
+    // setTotalSpent(totalSpents)
+
+    // Generar gráfico al cargar los ingresos
+    generateChart();
 
   }, [spentsUser?.url_avatar, spentsUser?.name, id, dispatch, arraySpents]);
 
@@ -92,64 +102,64 @@ const Home = ({ themeGlobal }) => {
     setSearchQuery(searchTerm);
   };
 
- // Función para generar el gráfico de ingresos por categoría
-const generateChart = () => {
-  const ctx = document.getElementById('incomeChart');
-  if (ctx) {
-    // Destruir el gráfico anterior si existe
-    if (chartRef.current) {
-      chartRef.current.destroy();
-    }
+  // Función para generar el gráfico de ingresos por categoría
+  const generateChart = () => {
+    const ctx = document.getElementById('incomeChart');
+    if (ctx) {
+      // Destruir el gráfico anterior si existe
+      if (chartRef.current) {
+        chartRef.current.destroy();
+      }
 
-    console.log(spentsUser);
+      console.log(spentsUser);
 
-    if (spentsUser && Array.isArray(spentsUser.spents)) {
-      const categories = {};
-      spentsUser?.spents.forEach(spent => {
-        const category = spent?.categorySpent?.name;
-        if (categories[category]) {
-          categories[category] += spent?.amount;
-        } else {
-          categories[category] = spent?.amount;
-        }
-      });
+      if (spentsUser && Array.isArray(spentsUser.spents)) {
+        const categories = {};
+        spentsUser?.spents.forEach(spent => {
+          const category = spent?.categorySpent?.name;
+          if (categories[category]) {
+            categories[category] += spent?.amount;
+          } else {
+            categories[category] = spent?.amount;
+          }
+        });
 
-      // Crear un nuevo gráfico y almacenar la referencia
-      chartRef.current = new Chart(ctx, {
-        type: 'bar',
-        data: {
-          labels: Object.keys(categories),
-          datasets: [{
-            label: 'Ingresos por categoría',
-            data: Object.values(categories),
-            backgroundColor: themeGlobal.palette.primary.main,
-            borderColor: themeGlobal.palette.primary.dark,
-            borderWidth: 1
-          }]
-        },
-        options: {
-          scales: {
-            y: {
-              beginAtZero: true,
-              ticks: {
-                callback: function (value) {
-                  return formatCurrency(value);
+        // Crear un nuevo gráfico y almacenar la referencia
+        chartRef.current = new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: Object.keys(categories),
+            datasets: [{
+              label: 'Ingresos por categoría',
+              data: Object.values(categories),
+              backgroundColor: themeGlobal.palette.primary.main,
+              borderColor: themeGlobal.palette.primary.dark,
+              borderWidth: 1
+            }]
+          },
+          options: {
+            scales: {
+              y: {
+                beginAtZero: true,
+                ticks: {
+                  callback: function (value) {
+                    return formatCurrency(value);
+                  }
                 }
               }
-            }
-          },
-          plugins: {
-            legend: {
-              display: false
+            },
+            plugins: {
+              legend: {
+                display: false
+              }
             }
           }
-        }
-      });
-    } else {
-      console.error("No se encontraron datos válidos para generar el gráfico.");
+        });
+      } else {
+        console.error("No se encontraron datos válidos para generar el gráfico.");
+      }
     }
-  }
-};
+  };
 
 
   function converDate(fechaISO) {
@@ -202,6 +212,56 @@ const generateChart = () => {
     setPage(value);
   };
 
+  const deletIcome = (idSpent) => {
+    Swal.fire({
+      title: '¿Deseas eliminar este dato?',
+      showDenyButton: true,
+      showCancelButton: false,
+      confirmButtonText: 'Eliminar',
+      denyButtonText: `No Eliminado`,
+    }).then((result) => {
+      /* Read more about isConfirmed, isDenied below */
+      if (result.isConfirmed) {
+        axios.delete(`http://localhost:8000/delitespent/${idSpent}`, getConfig())
+          .then((res) => {
+            dispatch(getSpentsUserThunk(id));
+            dispatch(getSpentsTotalThunk(id));
+            setArraySpents(spentsUser?.spents)
+            Swal.fire('Gasto eliminada con exito')
+          })
+          .catch((error) => {
+            Swal.fire('Error al eliminar el Gasto', error.response.data.message)
+            console.error(error)
+          });
+        Swal.fire('!Eliminado!', '', 'correctamente')
+      } else if (result.isDenied) {
+        Swal.fire('Gasto no eliminada', '', 'info')
+      }
+    })
+  }
+
+  const openEditModal = (spe) => {
+
+    setSelectedSpent(spe);
+    setEditModalOpen(true);
+  };
+
+  const closeEditModal = () => {
+    setSelectedSpent(null);
+    setEditModalOpen(false);
+  };
+
+  const updateArraySpents = (updatedSpent) => {
+    const updatedArray = arraySpents.map(item =>
+      item.id === updatedSpent.id ? updatedSpent : item
+    );
+    setArraySpents(updatedArray);
+  };
+
+  const addNewSpent = (newSpent) => {
+    setArraySpents(prevSpents => [...prevSpents, newSpent]);
+  };
+
 
   return (
     <ThemeProvider theme={themeGlobal}>
@@ -238,7 +298,7 @@ const generateChart = () => {
             >
               {<Box xs={12} sm={6} md={4}>
                 <Grid>
-                  <ModalCreatSpent themeGlobal={themeGlobal} />
+                  <ModalCreatSpent themeGlobal={themeGlobal}  />
                 </Grid>
               </Box>}
             </Stack>
@@ -286,8 +346,8 @@ const generateChart = () => {
                     <TableCell align="center">Categoria: {spe?.categorySpent?.name}</TableCell>
                     <TableCell align="center">{converDate(spe?.createdAt)}</TableCell>
                     <TableCell align="center">
-                      <Button size="small">Editar</Button>
-                      <Button size="small">Eliminars</Button>
+                      <Button onClick={() => openEditModal(spe)} size="small">Editar</Button>
+                      <Button onClick={() => deletIcome(spe?.id)} size="small">Eliminar</Button>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -296,7 +356,7 @@ const generateChart = () => {
           </TableContainer>
 
           <PaginationComponent
-            totalItems={arraySpents.length}
+            totalItems={Array.isArray(arraySpents) ? arraySpents.length : 0}
             itemsPerPage={itemsPerPage}
             currentPage={page}
             onPageChange={handleChangePage}
@@ -331,6 +391,13 @@ const generateChart = () => {
           Something here to give the footer a purpose!
         </Typography>
       </Box>
+      <ModalEditSpent
+        themeGlobal={themeGlobal}
+        open={editModalOpen}
+        handleClose={closeEditModal}
+        spent={selectedSpent}
+        updateArraySpents={updateArraySpents}
+      />
       {/* End footer */}
     </ThemeProvider>
   );

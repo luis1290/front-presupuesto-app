@@ -3,14 +3,14 @@ import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
 import { useState } from 'react';
 import CreateSpent from './CreateSpent';
+import { getSpentsUserThunk } from '../store/slices/spentsUser.slice';
+import { useDispatch, useSelector } from 'react-redux';
 
 const ModalCreatSpent = ({ themeGlobal }) => {
-
-
   const [open, setOpen] = useState(false);
-  const handleOpen = () => {
-    setOpen(!open);
-  };
+
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
   const style = {
     position: 'absolute',
@@ -28,13 +28,13 @@ const ModalCreatSpent = ({ themeGlobal }) => {
       <Button onClick={handleOpen} variant="contained">Agregar Gasto</Button>
       <Modal
         open={open}
-        onClose={handleOpen}
+        onClose={handleClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
         <Box className='modalCreate' sx={{ bgcolor: 'background.paper' }}  >
           <CreateSpent themeGlobal={themeGlobal} setOpen={setOpen} />
-          <Button onClick={handleOpen}
+          <Button onClick={handleClose}
             fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2 }}

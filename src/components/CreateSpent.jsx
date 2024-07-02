@@ -33,7 +33,6 @@ const CreateSpent = ({ themeGlobal, setOpen }) => {
   const [company, setCompany] = useState('');
 
   useEffect(() => {
-    dispatch(getSpentsUserThunk(id));
     dispatch(getCategorySpentThunk())
   }, [dispatch]);
 
@@ -69,13 +68,13 @@ const CreateSpent = ({ themeGlobal, setOpen }) => {
     axios.post('http://localhost:8000/addspent', formValues, getConfig())
       .then((res) => {
         console.log(res)
-        setOpen()
         dispatch(getSpentsUserThunk(id));
         dispatch(getSpentsTotalThunk(id));
         Swal.fire('Gasto agregada con exito')
+        setOpen(false)
       })
       .catch((error) => {
-        setOpen()
+
         Swal.fire(`Error al crear el Gasto ${error.response.data.message}`)
         console.error(error)
       });
