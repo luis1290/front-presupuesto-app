@@ -4,6 +4,7 @@ import LoguinForm from '../components/loguin/SignInSide';
 import axios from 'axios';
 import { useNavigate } from 'react-router';
 import { ThemeProvider } from '@emotion/react';
+import Swal from 'sweetalert2';
 
 const LoguinPage = ({ themeGlobal }) => {
 
@@ -17,7 +18,10 @@ const LoguinPage = ({ themeGlobal }) => {
         localStorage.setItem("id", res.data.id)
         navigate("/")
       })
-      .catch((error) => console.error(error));
+      .catch((error) => {
+        console.error(error);
+        Swal.fire('Error email o contraseñas incorrectas');
+      });
   }
 
   const handleChage = (data) => {

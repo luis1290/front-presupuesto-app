@@ -9,62 +9,77 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { InputLabel, MenuItem, Select } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-// import { getCompaniesThunk } from '../store/slices/companies.slice';
 import axios from 'axios';
 import getConfig from '../helpers/getConfig';
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router';
-// import { getJobAplicationThunk } from '../store/slices/jobAplication.slice';
+import { getCategorySpentThunk } from '../store/slices/categorySpent.slice';
+import { getSpentsTotalThunk } from '../store/slices/totalSpent.slice';
+import { getSpentsUserThunk } from '../store/slices/spentsUser.slice';
 
 
 
 const CreateSpent = ({ themeGlobal, setOpen }) => {
 
   const dispatch = useDispatch();
-  const companiesArray = useSelector((state) => state?.companies);
+  const spentsUser = useSelector((state) => state.spentsUser);
+  const totalSpents = useSelector((state) => state.totalSpents);
+
+  const categorySpent = useSelector((state) => state?.categorySpent);
   const id = localStorage.getItem("id")
 
   const navigate = useNavigate()
 
   const [company, setCompany] = useState('');
 
-//   useEffect(() => {
-//     dispatch(getCompaniesThunk())
-//   }, [company, dispatch]);
+  useEffect(() => {
+    dispatch(getSpentsUserThunk(id));
+    dispatch(getCategorySpentThunk())
+  }, [dispatch]);
 
   const [formValues, setFormValues] = useState({
     name: '',
     description: '',
-    date_share: '',
-    company_id: '',
-    uer_id: parseInt(id)
+    amount: '',
+    category_id: '',
+    user_id: parseInt(id)
   });
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-    setFormValues((prevValues) => ({
-      ...prevValues,
-      [name]: value,
-    }));
+    if (name === 'amount') {
+      if (/^\d*$/.test(value)) {
+        setFormValues((prevValues) => ({
+          ...prevValues,
+          [name]: value,
+        }));
+      }
+    } else {
+      setFormValues((prevValues) => ({
+        ...prevValues,
+        [name]: value,
+      }));
+    }
   };
 
+
   const handleSubmit = (event) => {
-    // event.preventDefault();
-    // // Aquí puedes manejar la lógica para enviar los datos del formulario parseInt(numeroComoString);
-    // axios.post('http://localhost:8000/aplicationjob', formValues, getConfig())
-    //   .then((res) => {
-    //     console.log(res)
-    //     setOpen()
-    //     // navigate("/")    dispatch(setJobAplication(res.data));
-    //     dispatch(getJobAplicationThunk(id));
-    //     Swal.fire('Aplicacion agregada con exito')
-    //   })
-    //   .catch((error) => {
-    //     setOpen()
-    //     Swal.fire(`Error al crear la aplicacion ${error.response.data.message}`)
-    //     console.error(error)
-    //   });
-    // console.log('Valores del formulario:', formValues);
+    event.preventDefault();
+    // Aquí puedes manejar la lógica para enviar los datos del formulario parseInt(numeroComoString);
+    axios.post('http://localhost:8000/addspent', formValues, getConfig())
+      .then((res) => {
+        console.log(res)
+        setOpen()
+        dispatch(getSpentsUserThunk(id));
+        dispatch(getSpentsTotalThunk(id));
+        Swal.fire('Gasto agregada con exito')
+      })
+      .catch((error) => {
+        setOpen()
+        Swal.fire(`Error al crear el Gasto ${error.response.data.message}`)
+        console.error(error)
+      });
+    console.log('Valores del formulario:', formValues);
   };
 
   return (
@@ -82,7 +97,7 @@ const CreateSpent = ({ themeGlobal, setOpen }) => {
         >
 
           <Typography component="h1" variant="h5">
-            Crear una aplicación
+            Agregar Gasto
           </Typography>
           <form onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
@@ -94,7 +109,7 @@ const CreateSpent = ({ themeGlobal, setOpen }) => {
                   required
                   fullWidth
                   id="name"
-                  label="Nombre Aplicación"
+                  label="Nombre"
                   autoFocus
                   onChange={handleChange}
                 />
@@ -115,29 +130,33 @@ const CreateSpent = ({ themeGlobal, setOpen }) => {
                 />
               </Grid>
               <Grid item xs={11} sm={11} md={11}>
-
                 <TextField
-                  id="date_share"
-                  label="fecha"
-                  name="date_share"
-                  type="date"
-                  value={formValues.date_share}
+                  required
+                  id="amount"
+                  name="amount"
+                  label="monto"
+                  value={formValues.amount}
                   onChange={handleChange}
+                  inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
+                  rows={4}
+                  autoFocus
+                  fullWidth
                 />
               </Grid>
 
               <Grid item xs={11} sm={11} md={11}>
-                <InputLabel id="demo-simple-select-label">Empresas</InputLabel>
+                <InputLabel id="demo-simple-select-label">Categoria Gasto</InputLabel>
                 <Select
-                  labelId="company"
-                  id="company_id"
-                  name="company_id"
-                  value={formValues.company_id}
+                  labelId="categoryincome"
+                  id="category_id"
+                  name="category_id"
+                  value={formValues.category_id}
                   label="Age"
                   onChange={handleChange}
+                  sx={{ mt: 3, mb: 2, minWidth: 200 }}
                 >
-                  {Array.isArray(companiesArray) ? companiesArray?.map((company) => (
-                    <MenuItem id="selectCompany" key={company?.id} value={company?.id}>{company?.name}</MenuItem>
+                  {Array.isArray(categorySpent) ? categorySpent?.map((cateSpe) => (
+                    <MenuItem id="selectCategorySpent" key={cateSpe?.id} value={cateSpe?.id}>{cateSpe?.name}</MenuItem>
                   )) : null}
                 </Select>
               </Grid>
@@ -148,7 +167,7 @@ const CreateSpent = ({ themeGlobal, setOpen }) => {
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >
-              Agregar aplicación
+              Agregar Gasto
             </Button>
           </form>
         </Box>

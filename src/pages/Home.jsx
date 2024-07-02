@@ -12,7 +12,7 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import Link from '@mui/material/Link';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 // import ModalCreatAplication from '../components/ModalCreatAplication';
 import NapBar from '../components/NapBar';
 import { useDispatch, useSelector } from 'react-redux';
@@ -24,8 +24,12 @@ import Swal from 'sweetalert2';
 import getConfig from '../helpers/getConfig';
 import { useNavigate } from 'react-router';
 import ModalCreatSpent from '../components/ModalCreatSpent';
-import { Pagination } from '@mui/material';
+import { InputAdornment, Pagination, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField } from '@mui/material';
 import PaginationComponent from '../components/PaginationComponent';
+import SearchIcon from '@mui/icons-material/Search';
+
+// Importa Chart.js
+import Chart from 'chart.js/auto';
 
 
 
@@ -41,15 +45,24 @@ const Home = ({ themeGlobal }) => {
   const [name, setName] = useState('')
   const [totalSpent, setTotalSpent] = useState('')
 
+  const [arraySpents, setArraySpents] = useState([]);
 
+  // Estado para el término de búsqueda
+  const [searchTerm, setSearchTerm] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
   //paginacion
   const itemsPerPage = 6; // Define la cantidad de elementos por página
   const [page, setPage] = useState(1);
 
+  // Filtra las categorías de ingreso según el término de búsqueda
+  const filteredItems = Array.isArray(arraySpents) ? arraySpents.filter((item) =>
+    item.name.toLowerCase().includes(searchTerm.toLowerCase())
+  ) : [];
+
   // Calcula el índice inicial y final de los elementos que se mostrarán en la página actual
   const startIndex = (page - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const currentItems = Array.isArray(spentsUser?.spents) ? spentsUser?.spents.slice(startIndex, endIndex) : [];
+  const currentItems = filteredItems.slice(startIndex, endIndex);
 
   const navigate = useNavigate()
 
@@ -57,18 +70,87 @@ const Home = ({ themeGlobal }) => {
   const handleOpen = () => {
     setOpen(!open);
   };
-
+  // Referencia para el gráfico
+  const chartRef = useRef(null);
 
 
 
   useEffect(() => {
     dispatch(getSpentsUserThunk(id));
     dispatch(getSpentsTotalThunk(id));
+    setArraySpents(spentsUser?.spents)
     setAbatar(spentsUser?.url_avatar)
     setName(spentsUser?.name)
     setTotalSpent(totalSpents)
 
-  }, [spentsUser?.url_avatar, spentsUser?.name, id, dispatch]);
+      // Generar gráfico al cargar los ingresos
+      generateChart();
+
+  }, [spentsUser?.url_avatar, spentsUser?.name, id, dispatch, arraySpents]);
+
+  const handleSearch = () => {
+    setSearchQuery(searchTerm);
+  };
+
+ // Función para generar el gráfico de ingresos por categoría
+const generateChart = () => {
+  const ctx = document.getElementById('incomeChart');
+  if (ctx) {
+    // Destruir el gráfico anterior si existe
+    if (chartRef.current) {
+      chartRef.current.destroy();
+    }
+
+    console.log(spentsUser);
+
+    if (spentsUser && Array.isArray(spentsUser.spents)) {
+      const categories = {};
+      spentsUser?.spents.forEach(spent => {
+        const category = spent?.categorySpent?.name;
+        if (categories[category]) {
+          categories[category] += spent?.amount;
+        } else {
+          categories[category] = spent?.amount;
+        }
+      });
+
+      // Crear un nuevo gráfico y almacenar la referencia
+      chartRef.current = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: Object.keys(categories),
+          datasets: [{
+            label: 'Ingresos por categoría',
+            data: Object.values(categories),
+            backgroundColor: themeGlobal.palette.primary.main,
+            borderColor: themeGlobal.palette.primary.dark,
+            borderWidth: 1
+          }]
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                callback: function (value) {
+                  return formatCurrency(value);
+                }
+              }
+            }
+          },
+          plugins: {
+            legend: {
+              display: false
+            }
+          }
+        }
+      });
+    } else {
+      console.error("No se encontraron datos válidos para generar el gráfico.");
+    }
+  }
+};
+
 
   function converDate(fechaISO) {
     try {
@@ -159,55 +241,79 @@ const Home = ({ themeGlobal }) => {
                   <ModalCreatSpent themeGlobal={themeGlobal} />
                 </Grid>
               </Box>}
-
             </Stack>
+            <Box sx={{ pt: 4 }} display="flex" justifyContent="center">
+              <TextField
+                variant="outlined"
+                label="Buscar"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <Button onClick={handleSearch}>
+                        <SearchIcon />
+                      </Button>
+                    </InputAdornment>
+                  )
+                }}
+              />
+            </Box>
           </Container>
         </Box>
+
         <Container sx={{ py: 8 }} maxWidth="md">
-          {/* End hero unit */}
-          <Grid container spacing={4}>
-            {currentItems?.map((apl) => (
-              <Grid item key={apl?.id} xs={12} sm={6} md={4}>
-                <Card
-                  sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
-                  elevation={4}
-                >
-                  <CardMedia
-                    component="div"
-                  >
-                    <Typography textAlign="center" key={apl?.id} gutterBottom variant="h3" component="h3">
-                      {apl?.name}
-                    </Typography>
-                  </CardMedia>
-                  <CardContent sx={{ flexGrow: 1 }}>
-                    <Typography textAlign="center" gutterBottom variant="h5">
-                      {formatCurrency(apl.amount)}
-                    </Typography>
-                    <Typography textAlign="center" variant="h5">
-                      Descripcion:  {apl.description}
-                    </Typography>
-                    <Typography textAlign="center" variant="h5">
-                      Categoria: {apl?.categorySpent?.name}
-                    </Typography>
-                    <Typography textAlign="center" key={apl?.id} gutterBottom variant="h6" component="h6">
-                      {converDate(apl?.createdAt)}
-                    </Typography>
-                  </CardContent>
-                  <CardActions >
-                    {/* <DetailtAplication key={apl?.company?.id} themeGlobal={themeGlobal} company={apl?.company?.name} email={apl?.company?.email} location={apl?.company?.location} interviews={apl?.interviews} /> */}
-                    <Button size="small">Editar</Button>
-                    {/* <Button onClick={() => deletAplication(apl?.id)} size="small">Eliminar</Button> */}
-                  </CardActions>
-                </Card>
-              </Grid>
-            ))}
-          </Grid>
+          <TableContainer component={Paper}>
+            <Table sx={{ minWidth: 650 }} aria-label="spents table">
+              <TableHead>
+                <TableRow>
+                  <TableCell sx={{ fontWeight: 'bold', backgroundColor: 'GrayText' }} align="center">Nombre</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold', backgroundColor: 'GrayText' }} align="center">Monto</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold', backgroundColor: 'GrayText' }} align="center">Descripción</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold', backgroundColor: 'GrayText' }} align="center">Categoría</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold', backgroundColor: 'GrayText' }} align="center">Fecha</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold', backgroundColor: 'GrayText' }} align="center">Acciones</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {Array.isArray(currentItems) && currentItems.map((spe) => (
+                  <TableRow key={spe?.id}>
+                    <TableCell component="th" scope="row" align="center">
+                      {spe?.name}
+                    </TableCell>
+                    <TableCell align="center">{formatCurrency(spe.amount)}</TableCell>
+                    <TableCell align="center">Descripcion: {spe.description}</TableCell>
+                    <TableCell align="center">Categoria: {spe?.categorySpent?.name}</TableCell>
+                    <TableCell align="center">{converDate(spe?.createdAt)}</TableCell>
+                    <TableCell align="center">
+                      <Button size="small">Editar</Button>
+                      <Button size="small">Eliminars</Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+
           <PaginationComponent
-            totalItems={spentsUser?.spents?.length}
+            totalItems={arraySpents.length}
             itemsPerPage={itemsPerPage}
             currentPage={page}
             onPageChange={handleChangePage}
           />
+        </Container>
+
+        <Container sx={{ py: 8 }} maxWidth="md">
+          <Grid item xs={12}>
+            <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }} elevation={4}>
+              <CardContent sx={{ flexGrow: 1 }}>
+                <Typography variant="h6" component="h6" gutterBottom>
+                  Distribución de gasto por categoría
+                </Typography>
+                <canvas id="incomeChart" width="400" height="200"></canvas>
+              </CardContent>
+            </Card>
+          </Grid>
         </Container>
       </main>
       {/* Footer */}
