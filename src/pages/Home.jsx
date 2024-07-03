@@ -245,7 +245,7 @@ const Home = ({ themeGlobal }) => {
     setArraySpents(updatedArray);
   };
 
-  const getSpent = (newSpent) => {
+  const getSpent = () => {
     setArraySpents(spentsUser.spents);
   };
 
