@@ -88,6 +88,7 @@ const ModalEditSpent = ({ themeGlobal, open, handleClose, spent, updateArraySpen
             <TextField
               label="Nombre"
               fullWidth
+              name="name"
               value={formValues.name}
               onChange={handleChange}
               margin="normal"

@@ -1,17 +1,14 @@
 
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
 import CssBaseline from '@mui/material/CssBaseline';
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import Link from '@mui/material/Link';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { ThemeProvider } from '@mui/material/styles';
 import { useEffect, useRef, useState } from 'react';
 import NapBar from '../components/NapBar';
 import { useDispatch, useSelector } from 'react-redux';
@@ -22,7 +19,7 @@ import Swal from 'sweetalert2';
 import getConfig from '../helpers/getConfig';
 import { useNavigate } from 'react-router';
 import ModalCreatSpent from '../components/ModalCreatSpent';
-import { InputAdornment, Pagination, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField } from '@mui/material';
+import { InputAdornment, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField } from '@mui/material';
 import PaginationComponent from '../components/PaginationComponent';
 import SearchIcon from '@mui/icons-material/Search';
 
@@ -73,6 +70,8 @@ const Home = ({ themeGlobal }) => {
   const handleOpen = () => {
     setOpen(!open);
   };
+
+
   // Referencia para el gráfico
   const chartRef = useRef(null);
 
@@ -81,18 +80,12 @@ const Home = ({ themeGlobal }) => {
   useEffect(() => {
     dispatch(getSpentsUserThunk(id));
     dispatch(getSpentsTotalThunk(id));
-
-
-
+    
     if (spentsUser) {
       setArraySpents(spentsUser.spents);
       setAbatar(spentsUser.url_avatar);
       setName(spentsUser.name);
     }
-    // setAbatar(spentsUser?.url_avatar)
-    // setName(spentsUser?.name)
-    // setTotalSpent(totalSpents)
-
     // Generar gráfico al cargar los ingresos
     generateChart();
 
@@ -166,27 +159,21 @@ const Home = ({ themeGlobal }) => {
     try {
       // Crear un objeto Date a partir de la cadena ISO 8601
       let fecha = new Date(fechaISO);
-
       // Obtener partes individuales de la fecha
       let dia = fecha.getDate();
       let mes = fecha.getMonth() + 1; // Los meses son indexados desde 0
       let anio = fecha.getFullYear();
       let horas = fecha.getHours();
       let minutos = fecha.getMinutes();
-
-
       // Determinar AM o PM y ajustar las horas al formato de 12 horas
       let ampm = horas >= 12 ? 'PM' : 'AM';
       horas = horas % 12;
       horas = horas ? horas : 12; // La hora '0' debe ser '12'
-
       // Formatear las partes para que tengan siempre dos dígitos
       dia = dia < 10 ? '0' + dia : dia;
       mes = mes < 10 ? '0' + mes : mes;
       horas = horas < 10 ? '0' + horas : horas;
       minutos = minutos < 10 ? '0' + minutos : minutos;
-
-
       // Formatear la fecha en el formato deseado
       return `${dia}/${mes}/${anio} ${horas}:${minutos} ${ampm}`;
     } catch (error) {
@@ -258,8 +245,8 @@ const Home = ({ themeGlobal }) => {
     setArraySpents(updatedArray);
   };
 
-  const addNewSpent = (newSpent) => {
-    setArraySpents(prevSpents => [...prevSpents, newSpent]);
+  const getSpent = (newSpent) => {
+    setArraySpents(spentsUser.spents);
   };
 
 
@@ -298,7 +285,7 @@ const Home = ({ themeGlobal }) => {
             >
               {<Box xs={12} sm={6} md={4}>
                 <Grid>
-                  <ModalCreatSpent themeGlobal={themeGlobal}  />
+                  <ModalCreatSpent themeGlobal={themeGlobal} updateArraySpents={getSpent} />
                 </Grid>
               </Box>}
             </Stack>

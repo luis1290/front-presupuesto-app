@@ -19,7 +19,8 @@ const ModalEditIncome = ({ themeGlobal, open, handleClose, income }) => {
     category_id: '',
     amount: '',
     description: '',
-    user_id: parseInt(id)
+    user_id: parseInt(id),
+    name: ''
   });
 
 
@@ -29,7 +30,8 @@ const ModalEditIncome = ({ themeGlobal, open, handleClose, income }) => {
         user_id: parseInt(id),
         category_id: income.category_id,
         amount: income.amount,
-        description: income.description
+        description: income.description,
+        name: income.name
       });
       dispatch(getCategoryIncomeThunk());
     }
@@ -37,7 +39,7 @@ const ModalEditIncome = ({ themeGlobal, open, handleClose, income }) => {
 
   const handleSubmit = () => {
     console.log(income.id)
-    axios.put(`http://localhost:8000/editincome/${income.id}`, formValues,  getConfig())
+    axios.put(`http://localhost:8000/editincome/${income.id}`, formValues, getConfig())
       .then((res) => {
         dispatch(getIncomeUserThunk(id));
         Swal.fire('Ingreso editada con exito')
@@ -81,13 +83,14 @@ const ModalEditIncome = ({ themeGlobal, open, handleClose, income }) => {
             <Typography variant="h6" gutterBottom>
               Editar  Ingreso
             </Typography>
-            {/* <TextField
-            label="Nombre"
-            fullWidth
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            margin="normal"
-          /> */}
+            <TextField
+              label="Nombre"
+              name="name"
+              fullWidth
+              value={formValues.name}
+              onChange={handleChange}
+              margin="normal"
+            />
             <TextField
               label="monto"
               fullWidth

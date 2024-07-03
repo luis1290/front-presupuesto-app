@@ -6,7 +6,7 @@ import CreateSpent from './CreateSpent';
 import { getSpentsUserThunk } from '../store/slices/spentsUser.slice';
 import { useDispatch, useSelector } from 'react-redux';
 
-const ModalCreatSpent = ({ themeGlobal }) => {
+const ModalCreatSpent = ({ themeGlobal, updateArraySpents }) => {
   const [open, setOpen] = useState(false);
 
   const handleOpen = () => setOpen(true);
@@ -33,7 +33,7 @@ const ModalCreatSpent = ({ themeGlobal }) => {
         aria-describedby="modal-modal-description"
       >
         <Box className='modalCreate' sx={{ bgcolor: 'background.paper' }}  >
-          <CreateSpent themeGlobal={themeGlobal} setOpen={setOpen} />
+          <CreateSpent themeGlobal={themeGlobal} setOpen={setOpen} updateArraySpents={updateArraySpents} />
           <Button onClick={handleClose}
             fullWidth
             variant="contained"

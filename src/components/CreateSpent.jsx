@@ -19,7 +19,7 @@ import { getSpentsUserThunk } from '../store/slices/spentsUser.slice';
 
 
 
-const CreateSpent = ({ themeGlobal, setOpen }) => {
+const CreateSpent = ({ themeGlobal, setOpen, updateArraySpents }) => {
 
   const dispatch = useDispatch();
   const spentsUser = useSelector((state) => state.spentsUser);
@@ -70,6 +70,7 @@ const CreateSpent = ({ themeGlobal, setOpen }) => {
         console.log(res)
         dispatch(getSpentsUserThunk(id));
         dispatch(getSpentsTotalThunk(id));
+        updateArraySpents();
         Swal.fire('Gasto agregada con exito')
         setOpen(false)
       })
