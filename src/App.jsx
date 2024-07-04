@@ -22,6 +22,7 @@ import Brightness7Icon from '@mui/icons-material/Brightness7';
 import CategoryIncomes from './pages/CategoryIncome';
 import CategorySpent from './pages/CategorySpent';
 import GetIconDataRange from './pages/GetIconDataRange';
+import GetSpentDataRange from './pages/GetSpentDataRange';
 
 
 
@@ -77,6 +78,7 @@ function App() {
             <Route path='/' element={<Home themeGlobal={themeGlobal} />} />
             <Route path='/incomes' element={<Incomes themeGlobal={themeGlobal} />} />
             <Route path='/incomeDataRange' element={<GetIconDataRange themeGlobal={themeGlobal} />} />
+            <Route path='/spentDataRange' element={<GetSpentDataRange themeGlobal={themeGlobal} />} />
             <Route path='/categoryincome' element={<CategoryIncomes themeGlobal={themeGlobal} />} />
             <Route path='/categoryspent' element={<CategorySpent themeGlobal={themeGlobal} />} />
           </Route>
