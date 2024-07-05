@@ -18,7 +18,7 @@ const token = localStorage.getItem("token")
 
 export const getCategoryIncomeThunk = () => dispatch => {
     dispatch(setIsLoading(true));
-    axios.get(`http://localhost:8000/getallcategoryincome/`, getConfig())
+    axios.get(`http://localhost:4500/getallcategoryincome/`, getConfig())
         .then((resp) => {
             console.log(resp.data)
             dispatch(setCategoryIncomelice(resp.data))

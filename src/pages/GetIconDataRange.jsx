@@ -13,7 +13,6 @@ import { ThemeProvider } from '@mui/material/styles';
 import { useEffect, useState } from 'react';
 import NapBar from '../components/NapBar';
 import { useDispatch, useSelector } from 'react-redux';
-import { getIconDataRangeThunk } from '../store/slices/getIncomeDataRange.slice';
 import Swal from 'sweetalert2';
 import axios from 'axios';
 import PaginationComponent from '../components/PaginationComponent';
@@ -32,6 +31,8 @@ const GetIconDataRange = ({ themeGlobal }) => {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [page, setPage] = useState(1);
+
+  const names = localStorage.getItem("name")
   const id = localStorage.getItem("id")
   const [avatar, setAbatar] = useState('')
 
@@ -154,7 +155,7 @@ const GetIconDataRange = ({ themeGlobal }) => {
     <ThemeProvider theme={themeGlobal}>
       <CssBaseline />
 
-      <NapBar nameUser={spentsUser.name} urlUser={avatar} />
+      <NapBar nameUser={names} urlUser={avatar} />
 
       <main>
         <Box

@@ -44,6 +44,7 @@ const Incomes = ({ themeGlobal }) => {
 
     // const [incomeBalance, setIncomeBalance] = useState('')
     const id = localStorage.getItem("id")
+    const names = localStorage.getItem("name")
 
 
     const [avatar, setAbatar] = useState('')
@@ -151,15 +152,15 @@ const Incomes = ({ themeGlobal }) => {
     };
 
     function formatCurrency(amount) {
-        if (amount !== undefined) {
-            return amount.toLocaleString('es-CR', {
-                style: 'currency',
-                currency: 'CRC',
-            });
-        } else {
-            console.error('Value is undefined');
-            return 'Invalid value';
+        if (amount === undefined || amount === null) {
+            console.error('Value is undefined or null');
+            amount = 0;
         }
+
+        return amount.toLocaleString('es-CR', {
+            style: 'currency',
+            currency: 'CRC',
+        });
 
     }
 
@@ -173,7 +174,7 @@ const Incomes = ({ themeGlobal }) => {
         }).then((result) => {
             /* Read more about isConfirmed, isDenied below */
             if (result.isConfirmed) {
-                axios.delete(`http://localhost:8000/deliteincome/${idIncome}`, getConfig())
+                axios.delete(`http://localhost:4500/deliteincome/${idIncome}`, getConfig())
                     .then((res) => {
                         dispatch(getIncomeUserThunk(id))
                         dispatch(getSpentsUserThunk(id));
@@ -237,7 +238,7 @@ const Incomes = ({ themeGlobal }) => {
         <ThemeProvider theme={themeGlobal}>
             <CssBaseline />
 
-            <NapBar nameUser={spentsUser.name} urlUser={avatar} />
+            <NapBar nameUser={names} urlUser={avatar} />
 
             <main>
                 {/* Hero unit */}

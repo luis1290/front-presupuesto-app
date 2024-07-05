@@ -40,7 +40,7 @@ const ModalEditSpent = ({ themeGlobal, open, handleClose, spent, updateArraySpen
 
   const handleSubmit = () => {
 
-    axios.put(`http://localhost:8000/editspent/${spent.id}`, formValues, getConfig())
+    axios.put(`http://localhost:4500/editspent/${spent.id}`, formValues, getConfig())
       .then((res) => {
         dispatch(getSpentsUserThunk(id));
         updateArraySpents(res.data);

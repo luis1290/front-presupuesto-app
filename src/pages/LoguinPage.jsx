@@ -11,11 +11,12 @@ const LoguinPage = ({ themeGlobal }) => {
   const navigate = useNavigate()
 
   const handleSubmit = (data) => {
-    axios.post('http://localhost:8000/users/login', data)
+    axios.post('http://localhost:4500/users/login', data)
       .then((res) => {
         console.log(res)
         localStorage.setItem("token", res.data.token)
         localStorage.setItem("id", res.data.id)
+        localStorage.setItem("name", res.data.name)
         navigate("/")
       })
       .catch((error) => {

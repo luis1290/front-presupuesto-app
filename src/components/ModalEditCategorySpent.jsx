@@ -19,7 +19,7 @@ const ModalEditCategorySpent = ({ themeGlobal, open, handleClose, category }) =>
     }, [category]);
 
     const handleSave = () => {
-        axios.put(`http://localhost:8000/editcategoryspent/${category.id}`, { name, description })
+        axios.put(`http://localhost:4500/editcategoryspent/${category.id}`, { name, description })
             .then((res) => {
                 dispatch(getCategorySpentThunk());
                 Swal.fire('Categoria Gasto editada con exito')

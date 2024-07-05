@@ -25,6 +25,8 @@ const GetSpentDataRange = ({ themeGlobal }) => {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [page, setPage] = useState(1);
+
+  const names = localStorage.getItem("name")
   const id = localStorage.getItem("id")
   const [avatar, setAbatar] = useState('')
 
@@ -66,7 +68,7 @@ const GetSpentDataRange = ({ themeGlobal }) => {
 
   const handleSearch = () => {
     // Aquí deberías llamar a la API con las fechas seleccionadas
-    axios.post(`http://localhost:8000/getspentdatarange/${id}`, formValues, getConfig())
+    axios.post(`http://localhost:4500/getspentdatarange/${id}`, formValues, getConfig())
       .then((response) => {
         console.log(response.data); // Verificar la estructura de response.data
 
@@ -135,7 +137,7 @@ const GetSpentDataRange = ({ themeGlobal }) => {
     <ThemeProvider theme={themeGlobal}>
       <CssBaseline />
 
-      <NapBar nameUser={spentsUser.name} urlUser={avatar} />
+      <NapBar nameUser={names} urlUser={avatar} />
 
       <main>
         <Box

@@ -31,7 +31,10 @@ const CategoryIncomes = ({ themeGlobal }) => {
     const dispatch = useDispatch();
     const categoryIncome = useSelector((state) => state.categoryIncome);
     const spentsUser = useSelector((state) => state.spentsUser);
+
     const id = localStorage.getItem("id")
+    const names = localStorage.getItem("name")
+
     const [avatar, setAbatar] = useState('')
 
     // Estado para el modal de edición
@@ -77,7 +80,7 @@ const CategoryIncomes = ({ themeGlobal }) => {
         }).then((result) => {
             /* Read more about isConfirmed, isDenied below */
             if (result.isConfirmed) {
-                axios.delete(`http://localhost:8000/delitecategoryincome/${id}`)
+                axios.delete(`http://localhost:4500/delitecategoryincome/${id}`)
                     .then((res) => {
                         dispatch(getCategoryIncomeThunk())
                         Swal.fire('categoria ingreso eliminada con exito')
@@ -112,7 +115,7 @@ const CategoryIncomes = ({ themeGlobal }) => {
         <ThemeProvider theme={themeGlobal}>
             <CssBaseline />
 
-            <NapBar nameUser={spentsUser.name} urlUser={avatar} />
+            <NapBar nameUser={names} urlUser={avatar} />
 
             <main>
                 {/* Hero unit */}

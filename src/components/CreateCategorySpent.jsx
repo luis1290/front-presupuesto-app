@@ -44,7 +44,7 @@ const CreateCategorySpent = ({ themeGlobal, setOpen }) => {
     const handleSubmit = (event) => {
         event.preventDefault();
         // Aquí puedes manejar la lógica para enviar los datos del formulario parseInt(numeroComoString);
-        axios.post('http://localhost:8000/addcategoryspent', formValues, getConfig())
+        axios.post('http://localhost:4500/addcategoryspent', formValues, getConfig())
             .then((res) => {
                 console.log(res)
                 setOpen()

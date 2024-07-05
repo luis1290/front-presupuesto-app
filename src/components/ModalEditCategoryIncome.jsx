@@ -19,7 +19,7 @@ const ModalEditCategoryIncome = ({ themeGlobal, open, handleClose, category }) =
     }, [category]);
 
     const handleSave = () => {
-        axios.put(`http://localhost:8000/editcategoryincome/${category.id}`, { name, description })
+        axios.put(`http://localhost:4500/editcategoryincome/${category.id}`, { name, description })
             .then((res) => {
                 dispatch(getCategoryIncomeThunk());
                 Swal.fire('Categoria Ingreso editada con exito')

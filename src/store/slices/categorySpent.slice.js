@@ -18,7 +18,7 @@ const token = localStorage.getItem("token")
 
 export const getCategorySpentThunk = () => dispatch => {
     dispatch(setIsLoading(true));
-    axios.get(`http://localhost:8000/getallcategoryspent/`, getConfig())
+    axios.get(`http://localhost:4500/getallcategoryspent/`, getConfig())
         .then((resp) => {
             console.log(resp.data)
             dispatch(setCategorySpentlice(resp.data))

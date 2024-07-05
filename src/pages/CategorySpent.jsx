@@ -33,6 +33,8 @@ const CategorySpent = ({ themeGlobal }) => {
     const dispatch = useDispatch();
     const categorySpent = useSelector((state) => state.categorySpent);
     const spentsUser = useSelector((state) => state.spentsUser);
+
+    const names = localStorage.getItem("name")
     const id = localStorage.getItem("id")
     const [avatar, setAbatar] = useState('')
 
@@ -79,7 +81,7 @@ const CategorySpent = ({ themeGlobal }) => {
         }).then((result) => {
             /* Read more about isConfirmed, isDenied below */
             if (result.isConfirmed) {
-                axios.delete(`http://localhost:8000/delitecategoryspent/${id}`)
+                axios.delete(`http://localhost:4500/delitecategoryspent/${id}`)
                     .then((res) => {
                         dispatch(getCategorySpentThunk())
                         Swal.fire('categoria gasto eliminada con exito')
@@ -114,7 +116,7 @@ const CategorySpent = ({ themeGlobal }) => {
         <ThemeProvider theme={themeGlobal}>
             <CssBaseline />
 
-            <NapBar nameUser={spentsUser.name} urlUser={avatar} />
+            <NapBar nameUser={names} urlUser={avatar} />
 
             <main>
                 {/* Hero unit */}

@@ -39,7 +39,7 @@ const ModalEditIncome = ({ themeGlobal, open, handleClose, income }) => {
 
   const handleSubmit = () => {
     console.log(income.id)
-    axios.put(`http://localhost:8000/editincome/${income.id}`, formValues, getConfig())
+    axios.put(`http://localhost:4500/editincome/${income.id}`, formValues, getConfig())
       .then((res) => {
         dispatch(getIncomeUserThunk(id));
         Swal.fire('Ingreso editada con exito')

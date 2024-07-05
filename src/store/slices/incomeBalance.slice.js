@@ -18,7 +18,7 @@ const token = localStorage.getItem("token")
 
 export const getIncomeBalanceUserThunk = (id) => dispatch => {
     dispatch(setIsLoading(true));
-    axios.get(`http://localhost:8000/getbalanceincome/${id}`, getConfig())
+    axios.get(`http://localhost:4500/getbalanceincome/${id}`, getConfig())
         .then((resp) => {
             console.log(resp.data)
             dispatch(setIncomeBalanceUserSlice(resp.data))

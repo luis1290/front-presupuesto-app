@@ -18,7 +18,7 @@ const token = localStorage.getItem("token")
 
 export const getSpentsUserThunk = (id) => dispatch => {
   dispatch(setIsLoading(true));
-  axios.get(`http://localhost:8000/users/${id}`, getConfig())
+  axios.get(`http://localhost:4500/users/${id}`, getConfig())
     .then((resp) => {
       console.log(resp.data)
       dispatch(setSpentsUserSlice(resp.data))

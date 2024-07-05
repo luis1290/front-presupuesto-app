@@ -41,6 +41,7 @@ const Home = ({ themeGlobal }) => {
 
 
   const id = localStorage.getItem("id")
+  const names = localStorage.getItem("name")
   const [avatar, setAbatar] = useState('')
   const [name, setName] = useState('')
   const [totalSpent, setTotalSpent] = useState('')
@@ -80,7 +81,7 @@ const Home = ({ themeGlobal }) => {
   useEffect(() => {
     dispatch(getSpentsUserThunk(id));
     dispatch(getSpentsTotalThunk(id));
-    
+
     if (spentsUser) {
       setArraySpents(spentsUser.spents);
       setAbatar(spentsUser.url_avatar);
@@ -183,16 +184,15 @@ const Home = ({ themeGlobal }) => {
   }
 
   function formatCurrency(amount) {
-    if (amount !== undefined) {
-      return amount.toLocaleString('es-CR', {
-        style: 'currency',
-        currency: 'CRC',
-      });
-    } else {
-      console.error('Value is undefined');
-      return 'Invalid value';
+    if (amount === undefined || amount === null) {
+      // console.error('Value is undefined or null');
+      amount = 0;
     }
 
+    return amount.toLocaleString('es-CR', {
+      style: 'currency',
+      currency: 'CRC',
+    });
   }
 
   const handleChangePage = (event, value) => {
@@ -209,7 +209,7 @@ const Home = ({ themeGlobal }) => {
     }).then((result) => {
       /* Read more about isConfirmed, isDenied below */
       if (result.isConfirmed) {
-        axios.delete(`http://localhost:8000/delitespent/${idSpent}`, getConfig())
+        axios.delete(`http://localhost:4500/delitespent/${idSpent}`, getConfig())
           .then((res) => {
             dispatch(getSpentsUserThunk(id));
             dispatch(getSpentsTotalThunk(id));
@@ -255,7 +255,7 @@ const Home = ({ themeGlobal }) => {
       <CssBaseline />
 
       {console.log('name', spentsUser?.name)}
-      <NapBar nameUser={spentsUser?.name} urlUser={avatar} themeGlobal={themeGlobal} />
+      <NapBar nameUser={names} urlUser={avatar} themeGlobal={themeGlobal} />
 
       <main>
         {/* Hero unit */}
