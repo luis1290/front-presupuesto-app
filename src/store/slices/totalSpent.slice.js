@@ -20,7 +20,6 @@ export const getSpentsTotalThunk = (id) => dispatch => {
   dispatch(setIsLoading(true));
   axios.get(`http://localhost:4500/getotalnespent/${id}`, getConfig())
     .then((resp) => {
-      console.log(resp.data)
       dispatch(setTotalSpentsSlice(resp.data))
     })
     .catch(error => {

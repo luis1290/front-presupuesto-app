@@ -74,7 +74,7 @@ const GetIconDataRange = ({ themeGlobal }) => {
 
   const handleSearch = () => {
     // Aquí deberías llamar a la API con las fechas seleccionadas
-    axios.post(`http://localhost:8000/getincomdatarange/${id}`, formValues, getConfig())
+    axios.post(`http://localhost:4500/getincomdatarange/${id}`, formValues, getConfig())
       .then((response) => {
         console.log(response.data); // Verificar la estructura de response.data
 

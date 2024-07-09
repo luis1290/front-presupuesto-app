@@ -12,7 +12,6 @@ const RegisterPage = ({ themeGlobal }) => {
     const { email, name, password } = data
     axios.post('http://localhost:4500/users', { name, email, password })
       .then((res) => {
-        console.log(res)
         navigate("/loguin")
       })
       .catch((error) => {
@@ -42,14 +41,10 @@ const RegisterPage = ({ themeGlobal }) => {
       );
   }
 
-  const handleChage = (data) => {
-    console.log(data)
-  }
-
-
+ 
   return (
     <Box>
-      <RegisterUser themeGlobal={themeGlobal} clickableText="Inicia seción" path="/loguin" onSubmit={handleSubmit} onChange={handleChage} />
+      <RegisterUser themeGlobal={themeGlobal} clickableText="Inicia seción" path="/loguin" onSubmit={handleSubmit} onChange={() => {}} />
     </Box>
   );
 };

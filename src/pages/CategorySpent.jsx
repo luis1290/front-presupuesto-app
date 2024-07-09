@@ -112,6 +112,9 @@ const CategorySpent = ({ themeGlobal }) => {
 
     };
 
+    // Calcula totalItems después de que categorySpent esté disponible
+    const totalItems = Array.isArray(categorySpent) ? categorySpent.length : 0;
+
     return (
         <ThemeProvider theme={themeGlobal}>
             <CssBaseline />
@@ -197,7 +200,7 @@ const CategorySpent = ({ themeGlobal }) => {
                         )) : null}
                     </Grid>
                     <PaginationComponent
-                        totalItems={categorySpent?.length}
+                        totalItems={totalItems}
                         itemsPerPage={itemsPerPage}
                         currentPage={page}
                         onPageChange={handleChangePage}

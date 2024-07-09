@@ -141,7 +141,7 @@ const LoguinForm = ({ clickableText, path, onSubmit, onChange, themeGlobal }) =>
               </Button>
               <Grid container>
                 <Grid item xs>
-                  <Button color="inherit" underline="none">
+                  <Button onClick={() => handleClick('/resetpass')} color="inherit" underline="none">
                     contraseña perdida?
                   </Button>
                 </Grid>

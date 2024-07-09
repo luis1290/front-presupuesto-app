@@ -85,7 +85,7 @@ const CreateCategoryIncome = ({ themeGlobal, setOpen }) => {
                                     required
                                     fullWidth
                                     id="name"
-                                    label="Nombre Aplicación"
+                                    label="Nombre Ingreso"
                                     autoFocus
                                     onChange={handleChange}
                                 />

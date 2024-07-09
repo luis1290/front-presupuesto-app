@@ -23,6 +23,7 @@ import CategoryIncomes from './pages/CategoryIncome';
 import CategorySpent from './pages/CategorySpent';
 import GetIconDataRange from './pages/GetIconDataRange';
 import GetSpentDataRange from './pages/GetSpentDataRange';
+import ResetPassword from './pages/ResetPassword';
 
 
 
@@ -73,6 +74,7 @@ function App() {
         <Routes>
           <Route path='/loguin' element={<LoguinPage themeGlobal={themeGlobal} />} />
           <Route path='/register' element={<RegisterPage themeGlobal={themeGlobal} />} />
+          <Route path='/resetpass' element={<ResetPassword themeGlobal={themeGlobal} />} />
 
           <Route element={<ProtectedRoutes />}>
             <Route path='/' element={<Home themeGlobal={themeGlobal} />} />

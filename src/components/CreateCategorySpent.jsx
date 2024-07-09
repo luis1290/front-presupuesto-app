@@ -85,7 +85,7 @@ const CreateCategorySpent = ({ themeGlobal, setOpen }) => {
                                     required
                                     fullWidth
                                     id="name"
-                                    label="Nombre Aplicación"
+                                    label="Nombre Categoria"
                                     autoFocus
                                     onChange={handleChange}
                                 />

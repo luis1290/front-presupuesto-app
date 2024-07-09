@@ -111,6 +111,9 @@ const CategoryIncomes = ({ themeGlobal }) => {
 
     };
 
+    // Calcula totalItems después de que categoryIncome esté disponible
+    const totalItems = Array.isArray(categoryIncome) ? categoryIncome.length : 0;
+
     return (
         <ThemeProvider theme={themeGlobal}>
             <CssBaseline />
@@ -196,7 +199,7 @@ const CategoryIncomes = ({ themeGlobal }) => {
                         )) : null}
                     </Grid>
                     <PaginationComponent
-                        totalItems={categoryIncome?.length}
+                        totalItems={totalItems}
                         itemsPerPage={itemsPerPage}
                         currentPage={page}
                         onPageChange={handleChangePage}

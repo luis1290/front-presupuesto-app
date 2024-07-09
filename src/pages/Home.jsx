@@ -77,20 +77,21 @@ const Home = ({ themeGlobal }) => {
   const chartRef = useRef(null);
 
 
-
   useEffect(() => {
     dispatch(getSpentsUserThunk(id));
     dispatch(getSpentsTotalThunk(id));
+  }, [dispatch, id]);
 
+  useEffect(() => {
     if (spentsUser) {
       setArraySpents(spentsUser.spents);
       setAbatar(spentsUser.url_avatar);
       setName(spentsUser.name);
     }
-    // Generar gráfico al cargar los ingresos
     generateChart();
+  }, [spentsUser]);
 
-  }, [spentsUser?.url_avatar, spentsUser?.name, id, dispatch, arraySpents]);
+ 
 
   const handleSearch = () => {
     setSearchQuery(searchTerm);
@@ -105,12 +106,11 @@ const Home = ({ themeGlobal }) => {
         chartRef.current.destroy();
       }
 
-      console.log(spentsUser);
 
       if (spentsUser && Array.isArray(spentsUser.spents)) {
         const categories = {};
         spentsUser?.spents.forEach(spent => {
-          const category = spent?.categorySpent?.name;
+          const category = spent?.categoryspent?.name;
           if (categories[category]) {
             categories[category] += spent?.amount;
           } else {
@@ -185,7 +185,6 @@ const Home = ({ themeGlobal }) => {
 
   function formatCurrency(amount) {
     if (amount === undefined || amount === null) {
-      // console.error('Value is undefined or null');
       amount = 0;
     }
 
@@ -254,7 +253,6 @@ const Home = ({ themeGlobal }) => {
     <ThemeProvider theme={themeGlobal}>
       <CssBaseline />
 
-      {console.log('name', spentsUser?.name)}
       <NapBar nameUser={names} urlUser={avatar} themeGlobal={themeGlobal} />
 
       <main>

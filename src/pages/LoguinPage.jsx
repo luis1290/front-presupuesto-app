@@ -13,7 +13,6 @@ const LoguinPage = ({ themeGlobal }) => {
   const handleSubmit = (data) => {
     axios.post('http://localhost:4500/users/login', data)
       .then((res) => {
-        console.log(res)
         localStorage.setItem("token", res.data.token)
         localStorage.setItem("id", res.data.id)
         localStorage.setItem("name", res.data.name)

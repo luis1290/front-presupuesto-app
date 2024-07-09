@@ -106,7 +106,7 @@ const Incomes = ({ themeGlobal }) => {
             if (Array.isArray(income)) {
                 const categories = {};
                 income.forEach(income => {
-                    const category = income.categoryIncome.name;
+                    const category = income.categoryincome.name;
                     if (categories[category]) {
                         categories[category] += income.amount;
                     } else {
@@ -153,7 +153,6 @@ const Incomes = ({ themeGlobal }) => {
 
     function formatCurrency(amount) {
         if (amount === undefined || amount === null) {
-            console.error('Value is undefined or null');
             amount = 0;
         }
 

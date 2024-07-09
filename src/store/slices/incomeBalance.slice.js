@@ -20,7 +20,6 @@ export const getIncomeBalanceUserThunk = (id) => dispatch => {
     dispatch(setIsLoading(true));
     axios.get(`http://localhost:4500/getbalanceincome/${id}`, getConfig())
         .then((resp) => {
-            console.log(resp.data)
             dispatch(setIncomeBalanceUserSlice(resp.data))
         })
         .catch(error => {

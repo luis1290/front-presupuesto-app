@@ -20,7 +20,6 @@ export const getCategorySpentThunk = () => dispatch => {
     dispatch(setIsLoading(true));
     axios.get(`http://localhost:4500/getallcategoryspent/`, getConfig())
         .then((resp) => {
-            console.log(resp.data)
             dispatch(setCategorySpentlice(resp.data))
         })
         .catch(error => {
