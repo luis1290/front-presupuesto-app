@@ -328,7 +328,7 @@ const Home = ({ themeGlobal }) => {
                     </TableCell>
                     <TableCell align="center">{formatCurrency(spe.amount)}</TableCell>
                     <TableCell align="center">Descripcion: {spe.description}</TableCell>
-                    <TableCell align="center">Categoria: {spe?.categorySpent?.name}</TableCell>
+                    <TableCell align="center"> {spe?.categoryspent?.name}</TableCell>
                     <TableCell align="center">{converDate(spe?.createdAt)}</TableCell>
                     <TableCell align="center">
                       <Button onClick={() => openEditModal(spe)} size="small">Editar</Button>

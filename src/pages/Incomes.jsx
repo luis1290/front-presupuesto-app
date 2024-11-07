@@ -156,11 +156,21 @@ const Incomes = ({ themeGlobal }) => {
             amount = 0;
         }
 
-        return amount.toLocaleString('es-CR', {
+        // return amount.toLocaleString('es-CR', {
+        //     style: 'currency',
+        //     currency: 'CRC',
+        // });
+        
+        const formattedAmount = Math.abs(amount).toLocaleString('es-CR', {
             style: 'currency',
             currency: 'CRC',
         });
 
+        if (amount < 0) {
+            return formattedAmount.replace('₡', '₡-');
+        }
+
+        return formattedAmount;
     }
 
     const deletIcome = (idIncome) => {
@@ -305,7 +315,7 @@ const Incomes = ({ themeGlobal }) => {
                                 {Array.isArray(currentItems) && currentItems.map((ico) => (
                                     <TableRow key={ico?.id}>
                                         <TableCell>{ico?.name}</TableCell>
-                                        <TableCell>{ico?.categoryIncome?.name}</TableCell>
+                                        <TableCell>{ico?.categoryincome?.name}</TableCell>
                                         <TableCell>{ico?.description}</TableCell>
                                         <TableCell>{formatCurrency(ico?.amount)}</TableCell>
                                         <TableCell>{converDate(ico?.createdAt)}</TableCell>
